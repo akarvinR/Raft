@@ -37,7 +37,6 @@ failed_any=0
 ../mrsequential ../../mrapps/wc.so ../../data/pg*txt || exit 1
 sort mr-out-0 > mr-correct-wc.txt
 rm -f mr-out*
-exit 1
 
 echo '***' Starting wc test.
 

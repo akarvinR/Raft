@@ -30,7 +30,7 @@ We supply you with a simple sequential mapreduce implementation in `mr-main/mrse
 $ cd mr-main
 $ go build -buildmode=plugin ../mrapps/wc.go
 $ rm mr-out*
-$ go run mrsequential.go wc.so pg*.txt
+$ go run mrsequential.go wc.so ../data/pg*.txt
 $ more mr-out-0
 A 509
 ABOUT 2
@@ -38,7 +38,7 @@ ACT 8
 ...
 ```
 
-`mrsequential.go` leaves its output in the file `mr-out-0`. The input is from the text files named `pg-xxx.txt`.
+`mrsequential.go` leaves its output in the file `mr-out-0`. The input is from the text files named `pg-xxx.txt` in the `data` folder.
 
 Feel free to borrow code from `mrsequential.go`. You should also have a look at `mrapps/wc.go` to see what MapReduce application code looks like.
 
@@ -58,10 +58,10 @@ In the `mr-main` directory, run the coordinator.
 
 ```
 $ rm mr-out*
-$ go run mrcoordinator.go pg-*.txt
+$ go run mrcoordinator.go ../data/pg-*.txt
 ```
 
-The `pg-*.txt` arguments to `mrcoordinator.go` are the input files; each file corresponds to one "split", and is the input to one Map task.
+The `../data/pg-*.txt` arguments to `mrcoordinator.go` are the input files; each file corresponds to one "split", and is the input to one Map task.
 
 In one or more other windows, run some workers:
 
