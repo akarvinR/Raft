@@ -8,26 +8,42 @@ import (
 	"os"
 )
 
+type Task struct {
+	workerID int
+	taskType string
+	fileName string
+}
+
 type Coordinator struct {
 	// Your definitions here.
-
+	files       []string
+	nReduce     int
+	tasks       chan Task
+	isAlive     map[int]bool
+	tmpWorkerID int
 }
 
 // Your code here -- RPC handlers for the worker to call.
+func (c *Coordinator) GetTask(args struct{}, reply *Task) error {
+	// Your code here.
+	// c.isAlive[c.tmpWorkerID] = true
+	c.tmpWorkerID++
+	task := <-c.tasks
+	reply.fileName = task.fileName
+	reply.taskType = task.taskType
+	reply.workerID = c.tmpWorkerID
+	return nil
+}
 
-//
 // an example RPC handler.
 //
 // the RPC argument and reply types are defined in rpc.go.
-//
 func (c *Coordinator) Example(args *ExampleArgs, reply *ExampleReply) error {
 	reply.Y = args.X + 1
 	return nil
 }
 
-//
 // start a thread that listens for RPCs from worker.go
-//
 func (c *Coordinator) server() {
 	rpc.Register(c)
 	rpc.HandleHTTP()
@@ -41,10 +57,8 @@ func (c *Coordinator) server() {
 	go http.Serve(l, nil)
 }
 
-//
 // mr-main/mrcoordinator.go calls Done() periodically to find out
 // if the entire job has finished.
-//
 func (c *Coordinator) Done() bool {
 	ret := false
 
@@ -53,13 +67,11 @@ func (c *Coordinator) Done() bool {
 	return ret
 }
 
-//
 // create a Coordinator.
 // mr-main/mrcoordinator.go calls this function.
 // nReduce is the number of reduce tasks to use.
-//
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
-	c := Coordinator{}
+	c := Coordinator{files: files, nReduce: nReduce, tasks: make(chan Task, 10), tmpWorkerID: 0}
 
 	// Your code here.
 
