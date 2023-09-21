@@ -1,10 +1,16 @@
 package mr
 
 import (
+	"bufio"
 	"fmt"
 	"hash/fnv"
+	"io"
 	"log"
 	"net/rpc"
+	"os"
+	"sort"
+	"strings"
+	"time"
 )
 
 // Map functions return a slice of KeyValue.
@@ -21,6 +27,12 @@ func ihash(key string) int {
 	return int(h.Sum32() & 0x7fffffff)
 }
 
+type ByKey []KeyValue
+
+func (a ByKey) Len() int           { return len(a) }
+func (a ByKey) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByKey) Less(i, j int) bool { return a[i].Key < a[j].Key }
+
 // mr-main/mrworker.go calls this function.
 func Worker(mapf func(string, string) []KeyValue,
 	reducef func(string, []string) string) {
@@ -29,6 +41,133 @@ func Worker(mapf func(string, string) []KeyValue,
 
 	// uncomment to send the Example RPC to the coordinator.
 	// CallExample()
+	var taskDone chan bool
+	var task Task
+	var workerDetails WorkerDetails
+
+	sendHeartBeat := func() {
+		for {
+			select {
+			case <-taskDone:
+				return
+			default:
+				call("Coordinator.HeartBeat", &workerDetails, &task)
+			}
+		}
+	}
+	NReduce := NReduce{}
+
+	call("Coordinator.GetNreduce", &NReduce, &NReduce)
+	workerDetails.WorkerID = -1
+	for {
+		time.Sleep(500 * time.Millisecond)
+		call("Coordinator.GetTask", &workerDetails, &task)
+		go sendHeartBeat()
+		if task.TaskType == "over" {
+			break
+		} else if task.TaskType == "map" {
+			//
+			intermediate := []KeyValue{}
+			filename := task.FileNames[0]
+			file, err := os.Open(filename)
+			if err != nil {
+				log.Fatalf("cannot open %v", filename)
+			}
+			content, err := io.ReadAll(file)
+			if err != nil {
+				log.Fatalf("cannot read %v", filename)
+			}
+			file.Close()
+			kva := mapf(filename, string(content))
+			intermediate = append(intermediate, kva...)
+			buckets := make([][]KeyValue, NReduce.NReduce)
+			for _, kv := range intermediate {
+				bucket := ihash(kv.Key) % NReduce.NReduce
+				buckets[bucket] = append(buckets[bucket], kv)
+			}
+			fileNames := make([]string, NReduce.NReduce)
+			for i := 0; i < NReduce.NReduce; i++ {
+				oname := "mr-temp-" + fmt.Sprint(task.TaskID) + "-" + fmt.Sprint(i)
+				fileNames[i] = oname
+				ofile, _ := os.Create(oname)
+				for _, kv := range buckets[i] {
+					fmt.Fprintf(ofile, "%v %v\n", kv.Key, kv.Value)
+				}
+				ofile.Close()
+			}
+
+			taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: fileNames}
+			// print((taskOutput.TaskID))
+			call("Coordinator.TaskCompleted", &taskOutput, &task)
+
+		} else if task.TaskType == "reduce" {
+
+			taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: task.FileNames}
+			output := []KeyValue{}
+			for _, filePath := range task.FileNames {
+				file, err := os.Open(filePath)
+				if err != nil {
+					fmt.Printf("Error opening file %s: %v\n", filePath, err)
+					continue
+				}
+				defer file.Close()
+
+				scanner := bufio.NewScanner(file)
+
+				// Process each line in the file
+				for scanner.Scan() {
+					line := scanner.Text()
+					parts := strings.Fields(line)
+					if len(parts) != 2 {
+						fmt.Printf("Skipping invalid line: %s\n", line)
+						continue
+					}
+
+					key := parts[0]
+					value := parts[1]
+
+					// Append the value to the map's slice
+					output = append(output, KeyValue{key, value})
+				}
+
+				if err := scanner.Err(); err != nil {
+					fmt.Printf("Error scanning file %s: %v\n", filePath, err)
+				}
+			}
+
+			sort.Sort(ByKey(output))
+			oname := "mr-out-" + strings.Split(task.FileNames[0], "-")[3]
+
+			ofile, _ := os.Create(oname)
+
+			//
+			// call Reduce on each distinct key in intermediate[],
+			// and print the result to mr-out-0.
+			//
+			i := 0
+			for i < len(output) {
+				j := i + 1
+				for j < len(output) && output[j].Key == output[i].Key {
+					j++
+				}
+				values := []string{}
+				for k := i; k < j; k++ {
+					values = append(values, output[k].Value)
+				}
+				outputx := reducef(output[i].Key, values)
+
+				// this is the correct format for each line of Reduce output.
+				fmt.Fprintf(ofile, "%v %v\n", output[i].Key, outputx)
+
+				i = j
+			}
+
+			ofile.Close()
+			call("Coordinator.TaskCompleted", &taskOutput, &task)
+
+		}
+
+	}
 
 }
 

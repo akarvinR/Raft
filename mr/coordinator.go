@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"sync"
+	"sync/atomic"
+	"time"
 )
 
 /*
@@ -17,80 +20,155 @@ Once, a worker had done the job, it will send a RPC to the coordinator to notify
 
 Once, a map task is done, the worker will send all filesnames to the coordinator.
 */
-type Task struct {
-	workerID int
-	taskType string
-	fileName string
-	state    string
+type NReduce struct {
+	NReduce int
 }
-
-type CompletedTask struct {
-	task           Task
-	outputFileName string
-}
-
 type Coordinator struct {
 	// Your definitions here.
+	mu          sync.Mutex
 	files       []string
 	nReduce     int
-	mapTasks    Task
-	reduceTasks chan Task
-	tmpWorkerID int //TODO MAKE ATOMIC
-	workers     map[int]bool
+	tmpWorkerID int32
+	tmpTaskID   int32
+
+	tasksCompleted  map[int32]TaskOutput //taskID -> TaskOutput
+	tasksAvailable  chan Task
+	tasksInProgress map[int32]Task //taskID -> Task
+	workersTaskMap  map[int32]Task //workerID -> Task
+	workersAliveMap map[int32]int  //workerID -> aliveCount
 }
 
-// Your code here -- RPC handlers for the worker to call.
-func (c *Coordinator) GetTask(args struct{}, reply *Task) error {
+func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
 
-	//if mapworkers are completed
-	task := <-c.tasks
-	reply.fileName = task.fileName
-	reply.taskType = task.taskType
-	reply.workerID = c.tmpWorkerID
-	//clean all workers.
+	if len(c.tasksCompleted) == c.nReduce+len(c.files) {
+		reply.TaskType = "over"
+		return nil
+	}
 
+	if args.WorkerID == -1 {
+		atomic.AddInt32(&c.tmpWorkerID, 1)
+		reply.WorkerID = atomic.LoadInt32(&c.tmpWorkerID)
+	} else {
+		reply.WorkerID = args.WorkerID
+	}
+	task := <-c.tasksAvailable
+	reply.TaskID = task.TaskID
+	reply.FileNames = task.FileNames
+	reply.TaskType = task.TaskType
 
-	//if only reduce works are left
-	//
+	c.mu.Lock()
+	c.workersAliveMap[reply.WorkerID] = 1
+	c.workersTaskMap[reply.WorkerID] = task
+	c.tasksInProgress[task.TaskID] = task
+	c.mu.Unlock()
+
 	return nil
 }
-func (c *Coordinator) taskCompleted(args struct{}, reply struct{}) {
-	//put tasksinprogress to taskscompleted.
-	//remove worker from workers, and from reduce jobs.
 
+func (c *Coordinator) addReduceTasks() {
+
+	reduceTasks := make([]Task, c.nReduce)
+	for _, value := range c.tasksCompleted {
+		for i := 0; i < c.nReduce; i++ {
+			reduceTasks[i].FileNames = append(reduceTasks[i].FileNames, value.OutputFileNames[i])
+		}
+	}
+	for i := 0; i < c.nReduce; i++ {
+		c.tmpTaskID++
+		reduceTasks[i].TaskType = "reduce"
+		reduceTasks[i].TaskID = c.tmpTaskID
+		c.tasksAvailable <- reduceTasks[i]
+	}
+}
+
+func (c *Coordinator) addMapTasks() {
+	for i := 0; i < len(c.files); i++ {
+		c.tmpTaskID++
+
+		mapTask := Task{TaskID: c.tmpTaskID, TaskType: "map", FileNames: []string{c.files[i]}}
+		c.tasksAvailable <- mapTask
+		// print(mapTask)
+	}
+
+}
+func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
+	// print(args.TaskID)
+	// print(args.TaskID)
+
+	c.mu.Lock()
+
+	task := c.tasksInProgress[args.TaskID]
+	delete(c.tasksInProgress, task.TaskID)
+	delete(c.workersTaskMap, task.WorkerID)
+	c.tasksCompleted[task.TaskID] = *args
+
+	// print(args.outputFileNames)
+	if len(c.tasksCompleted) == len(c.files) {
+		c.addReduceTasks()
+	}
+
+	c.mu.Unlock()
+
+	return nil
 
 }
 
-func (c *Coordinator) removeWorker(args struct{}, reply struct{}) {
+func (c *Coordinator) removeWorker(args WorkerDetails, reply struct{}) {
 	//remove tasks from the tasksinprogress and put it in taskstobedone
-	//
+	task := c.workersTaskMap[args.WorkerID]
+	c.tasksAvailable <- task
+
+	c.mu.Lock()
+
+	delete(c.tasksInProgress, task.TaskID)
+
+	delete(c.workersTaskMap, args.WorkerID)
+	delete(c.workersAliveMap, args.WorkerID)
+
+	c.mu.Unlock()
 
 }
-func (c *Coordinator) waitForHeartBeat(args struct{}, reply struct{})  {
-	//store alive count
-	//sleepfor5seconds
-	//if alivenotincreamend
-	//killworker
+func (c *Coordinator) waitForHeartBeat(args *WorkerDetails, reply struct{}) {
+	c.mu.Lock()
+	tmpCount := c.workersAliveMap[args.WorkerID]
+	c.mu.Unlock()
+	time.Sleep(5 * time.Second)
+	if tmpCount == c.workersAliveMap[args.WorkerID] {
+		delete(c.workersAliveMap, args.WorkerID)
+		c.removeWorker(*args, reply)
+	}
 
 }
-func (c *Coordinator) heartBeat(args struct{}, reply struct{}) error {
+func (c *Coordinator) HeartBeat(args *WorkerDetails, reply *struct{}) error {
 	//increament alive count
 	//sleepfor10seconds
 	//go waitforheartbeat//10 seconds
 	//sendreply
 
 	//return
+	c.mu.Lock()
+	c.workersAliveMap[args.WorkerID]++
+	c.mu.Unlock()
+	time.Sleep(10 * time.Second)
+	go c.waitForHeartBeat(args, *reply)
+	return nil
 
 }
 
-// rpc done task
-func (c *Coordinator) DoneTask(args *Task, reply *struct{}) error {
-	// Your code here.
-}
 func (c *Coordinator) Example(args *ExampleArgs, reply *ExampleReply) error {
+
 	reply.Y = args.X + 1
 	return nil
 }
+
+func (c *Coordinator) GetNreduce(args *NReduce, reply *NReduce) error {
+
+	reply.NReduce = c.nReduce
+
+	return nil
+}
+
+// Your code here -- RPC handlers for the worker to call.
 
 // start a thread that listens for RPCs from worker.go
 func (c *Coordinator) server() {
@@ -109,9 +187,7 @@ func (c *Coordinator) server() {
 // mr-main/mrcoordinator.go calls Done() periodically to find out
 // if the entire job has finished.
 func (c *Coordinator) Done() bool {
-	ret := false
-
-	// Your code here.
+	ret := (len(c.tasksCompleted) == c.nReduce+len(c.files))
 
 	return ret
 }
@@ -120,8 +196,8 @@ func (c *Coordinator) Done() bool {
 // mr-main/mrcoordinator.go calls this function.
 // nReduce is the number of reduce tasks to use.
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
-	c := Coordinator{files: files, nReduce: nReduce, tasks: make(chan Task, 10), tmpWorkerID: 0}
-
+	c := Coordinator{files: files, nReduce: nReduce, tasksAvailable: make(chan Task, nReduce+len(files)), tmpWorkerID: 0, tmpTaskID: 0, tasksCompleted: make(map[int32]TaskOutput), tasksInProgress: make(map[int32]Task), workersTaskMap: make(map[int32]Task), workersAliveMap: make(map[int32]int)}
+	c.addMapTasks()
 	// Your code here.
 
 	c.server()
