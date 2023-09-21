@@ -29,9 +29,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Usage: mrsequential xxx.so inputfiles...\n")
 		os.Exit(1)
 	}
-	for _, arg := range os.Args {
-		fmt.Println(arg)
-	}
+	// for _, arg := range os.Args {
+	// 	fmt.Println(arg)
+	// }
 	mapf, reducef := loadPlugin(os.Args[1])
 
 	//

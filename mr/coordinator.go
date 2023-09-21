@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -67,12 +68,22 @@ func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
 	// c.workersAliveMap.Store(reply.WorkerID, 1
 
 	go c.waitForHeartBeat(args, struct{}{})
+
 	c.workersTaskMap.Store(reply.WorkerID, task)
 	c.tasksInProgress.Store(task.TaskID, task)
-
+	go c.redoTask(task.TaskID)
 	return nil
 }
+func (c *Coordinator) redoTask(taskID int32) {
+	time.Sleep(15 * time.Second)
+	// print("Redoing Task")
+	if val, found := c.tasksInProgress.Load(taskID); found {
+		task := val.(Task)
+		// print("Task found in progress")
+		c.removeWorker(WorkerDetails{WorkerID: task.WorkerID}, struct{}{})
+	}
 
+}
 func (c *Coordinator) addReduceTasks() {
 
 	reduceTasks := make([]Task, c.nReduce)
@@ -111,11 +122,19 @@ func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
 	// print(args.TaskID)
 	// print(args.TaskID)
 
-	ttask, _ := c.tasksInProgress.Load(args.TaskID) //[args.TaskID]
+	ttask, found := c.tasksInProgress.Load(args.TaskID) //[args.TaskID]
+	if !found {
+		return nil
+	}
 	task := ttask.(Task)
 	// delete(c.tasksInProgress, task.TaskID)
 	// delete(c.workersTaskMap, task.WorkerID)
 	// c.tasksCompleted[task.TaskID] = *args
+
+	if task.TaskType == "reduce" {
+		os.Rename(args.OutputFileNames[0], "mr-out-"+strconv.Itoa(int(task.TaskID)))
+	}
+
 	c.tasksInProgress.Delete(task.TaskID)
 	c.workersTaskMap.Delete(task.WorkerID)
 	c.tasksCompleted.Store(task.TaskID, *args)
@@ -141,7 +160,8 @@ func (c *Coordinator) removeWorker(args WorkerDetails, reply struct{}) {
 	// delete(c.tasksInProgress, task.TaskID)
 	// delete(c.workersTaskMap, args.WorkerID)
 	// delete(c.workersAliveMap, args.WorkerID)
-
+	// print("deleting worker")
+	// print(args.WorkerID)
 	c.tasksInProgress.Delete(task.TaskID)
 	c.workersTaskMap.Delete(args.WorkerID)
 	c.workersHeartBeat.Delete(args.WorkerID)
@@ -154,9 +174,12 @@ func (c *Coordinator) SendHeartBeat(args *WorkerDetails, reply *WorkerDetails) e
 	// print(workerfound)
 	if workerfound {
 		// print("hello")
-		heartBeatChannel.(chan int) <- 1
-	}
 
+		heartBeatChannel.(chan int) <- 1
+	} else {
+		// print("Worker not found")
+		// reply.WorkerID = -1
+	}
 	return nil
 }
 func (c *Coordinator) waitForHeartBeat(args *WorkerDetails, reply struct{}) {

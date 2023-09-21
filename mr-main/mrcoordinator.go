@@ -22,9 +22,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Usage: mrcoordinator inputfiles...\n")
 		os.Exit(1)
 	}
-	for _, arg := range os.Args {
-		fmt.Println(arg)
-	}
+	// for _, arg := range os.Args {
+	// 	fmt.Println(arg)
+	// }
 	m := mr.MakeCoordinator(os.Args[1:], 10)
 	for m.Done() == false {
 		time.Sleep(time.Second)

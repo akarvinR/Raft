@@ -44,7 +44,7 @@ func Worker(mapf func(string, string) []KeyValue,
 	var taskDone chan bool
 	var task Task
 	var workerDetails WorkerDetails
-
+	var cancelWorker chan bool
 	sendHeartBeat := func() {
 		interval := time.Second * 8
 		ticker := time.NewTicker(interval)
@@ -53,10 +53,13 @@ func Worker(mapf func(string, string) []KeyValue,
 			select {
 			case <-taskDone:
 				return
+			case <-cancelWorker:
+				return
 			default:
 				select {
 				case <-ticker.C:
 					call("Coordinator.SendHeartBeat", &workerDetails, &workerDetails)
+
 				default:
 					continue
 				}
@@ -69,118 +72,132 @@ func Worker(mapf func(string, string) []KeyValue,
 	workerDetails.WorkerID = -1
 	for {
 		// time.Sleep(2 * time.Millisecond)
+		select {
+		case <-cancelWorker:
+			//donothing
+			// print("worker cancelled")
+		default:
+			call("Coordinator.GetTask", &workerDetails, &task)
+			workerDetails.WorkerID = task.WorkerID
+			go sendHeartBeat()
+			if task.TaskType == "over" {
+				taskDone <- true
+				break
+			} else if task.TaskType == "map" {
+				//
 
-		call("Coordinator.GetTask", &workerDetails, &task)
-		// time.Sleep(20 * time.Second)
-		workerDetails.WorkerID = task.WorkerID
-		// print(workerDetails.WorkerID)
-		go sendHeartBeat()
-		if task.TaskType == "over" {
-			taskDone <- true
-			break
-		} else if task.TaskType == "map" {
-			//
-			intermediate := []KeyValue{}
-			filename := task.FileNames[0]
-			file, err := os.Open(filename)
-			if err != nil {
-				log.Fatalf("cannot open %v", filename)
-			}
-			content, err := io.ReadAll(file)
-			if err != nil {
-				log.Fatalf("cannot read %v", filename)
-			}
-			file.Close()
-			kva := mapf(filename, string(content))
-			intermediate = append(intermediate, kva...)
-			buckets := make([][]KeyValue, NReduce.NReduce)
-			for _, kv := range intermediate {
-				bucket := ihash(kv.Key) % NReduce.NReduce
-				buckets[bucket] = append(buckets[bucket], kv)
-			}
-			fileNames := make([]string, NReduce.NReduce)
-			for i := 0; i < NReduce.NReduce; i++ {
-				oname := "mr-temp-" + fmt.Sprint(task.TaskID) + "-" + fmt.Sprint(i)
-				fileNames[i] = oname
-				ofile, _ := os.Create(oname)
-				for _, kv := range buckets[i] {
-					fmt.Fprintf(ofile, "%v %v\n", kv.Key, kv.Value)
-				}
-				ofile.Close()
-			}
-
-			taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: fileNames}
-			// print((taskOutput.TaskID))
-			call("Coordinator.TaskCompleted", &taskOutput, &task)
-			// print("task done")
-
-			// taskDone <- true
-
-		} else if task.TaskType == "reduce" {
-
-			taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: task.FileNames}
-			output := []KeyValue{}
-			for _, filePath := range task.FileNames {
-				file, err := os.Open(filePath)
+				intermediate := []KeyValue{}
+				filename := task.FileNames[0]
+				file, err := os.Open(filename)
 				if err != nil {
-					fmt.Printf("Error opening file %s: %v\n", filePath, err)
-					continue
+					log.Fatalf("cannot open %v", filename)
 				}
-				defer file.Close()
+				content, err := io.ReadAll(file)
+				if err != nil {
+					log.Fatalf("cannot read %v", filename)
+				}
+				file.Close()
+				kva := mapf(filename, string(content))
+				intermediate = append(intermediate, kva...)
+				buckets := make([][]KeyValue, NReduce.NReduce)
+				for _, kv := range intermediate {
+					bucket := ihash(kv.Key) % NReduce.NReduce
+					buckets[bucket] = append(buckets[bucket], kv)
+				}
+				fileNames := make([]string, NReduce.NReduce)
+				for i := 0; i < NReduce.NReduce; i++ {
+					// oname := "mr-temp-" + fmt.Sprint(task.TaskID) + "-" + fmt.Sprint(i)
+					//Create oname be a tempfile using io.TempFile
+					// oname := fmt.Sprintf("mr-temp-%v-%v", task.TaskID, i)
+					ofile, _ := os.CreateTemp("", "temp-")
+					fileNames[i] = ofile.Name()
 
-				scanner := bufio.NewScanner(file)
+					// ofile, _ := os.Create(oname)
+					for _, kv := range buckets[i] {
+						fmt.Fprintf(ofile, "%v %v\n", kv.Key, kv.Value)
+					}
+					ofile.Close()
+				}
 
-				// Process each line in the file
-				for scanner.Scan() {
-					line := scanner.Text()
-					parts := strings.Fields(line)
-					if len(parts) != 2 {
-						fmt.Printf("Skipping invalid line: %s\n", line)
+				taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: fileNames}
+				// print((taskOutput.TaskID))
+				var reply struct{}
+				call("Coordinator.TaskCompleted", &taskOutput, &reply)
+				// print("task done")
+
+				// taskDone <- true
+
+			} else if task.TaskType == "reduce" {
+
+				taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: task.FileNames}
+				output := []KeyValue{}
+				for _, filePath := range task.FileNames {
+					file, err := os.Open(filePath)
+					if err != nil {
+						fmt.Printf("Error opening file %s: %v\n", filePath, err)
 						continue
 					}
+					defer file.Close()
 
-					key := parts[0]
-					value := parts[1]
+					scanner := bufio.NewScanner(file)
 
-					// Append the value to the map's slice
-					output = append(output, KeyValue{key, value})
+					// Process each line in the file
+					for scanner.Scan() {
+						line := scanner.Text()
+						parts := strings.Fields(line)
+						if len(parts) != 2 {
+							fmt.Printf("Skipping invalid line: %s\n", line)
+							continue
+						}
+
+						key := parts[0]
+						value := parts[1]
+
+						// Append the value to the map's slice
+						output = append(output, KeyValue{key, value})
+					}
+
+					if err := scanner.Err(); err != nil {
+						fmt.Printf("Error scanning file %s: %v\n", filePath, err)
+					}
 				}
 
-				if err := scanner.Err(); err != nil {
-					fmt.Printf("Error scanning file %s: %v\n", filePath, err)
+				sort.Sort(ByKey(output))
+				// oname := "mr-out-" + strings.Split(task.FileNames[0], "-")[3]
+
+				ofile, _ := os.CreateTemp("", "reduce-")
+
+				oname := ofile.Name()
+
+				taskOutput.OutputFileNames = []string{oname}
+
+				//
+				// call Reduce on each distinct key in intermediate[],
+				// and print the result to mr-out-0.
+				//
+				i := 0
+				for i < len(output) {
+					j := i + 1
+					for j < len(output) && output[j].Key == output[i].Key {
+						j++
+					}
+					values := []string{}
+					for k := i; k < j; k++ {
+						values = append(values, output[k].Value)
+					}
+					outputx := reducef(output[i].Key, values)
+
+					// this is the correct format for each line of Reduce output.
+					fmt.Fprintf(ofile, "%v %v\n", output[i].Key, outputx)
+
+					i = j
 				}
+
+				ofile.Close()
+				var reply struct{}
+				call("Coordinator.TaskCompleted", &taskOutput, &reply)
+				// taskDone <- true
 			}
-
-			sort.Sort(ByKey(output))
-			oname := "mr-out-" + strings.Split(task.FileNames[0], "-")[3]
-
-			ofile, _ := os.Create(oname)
-
-			//
-			// call Reduce on each distinct key in intermediate[],
-			// and print the result to mr-out-0.
-			//
-			i := 0
-			for i < len(output) {
-				j := i + 1
-				for j < len(output) && output[j].Key == output[i].Key {
-					j++
-				}
-				values := []string{}
-				for k := i; k < j; k++ {
-					values = append(values, output[k].Value)
-				}
-				outputx := reducef(output[i].Key, values)
-
-				// this is the correct format for each line of Reduce output.
-				fmt.Fprintf(ofile, "%v %v\n", output[i].Key, outputx)
-
-				i = j
-			}
-
-			ofile.Close()
-			call("Coordinator.TaskCompleted", &taskOutput, &task)
-			// taskDone <- true
 
 		}
 

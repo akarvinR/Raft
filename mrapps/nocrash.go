@@ -27,7 +27,7 @@ func maybeCrash() {
 
 func Map(filename string, contents string) []mr.KeyValue {
 	maybeCrash()
-
+	// print("hello")
 	kva := []mr.KeyValue{}
 	kva = append(kva, mr.KeyValue{"a", filename})
 	kva = append(kva, mr.KeyValue{"b", strconv.Itoa(len(filename))})
