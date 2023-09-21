@@ -25,29 +25,32 @@ type NReduce struct {
 }
 type Coordinator struct {
 	// Your definitions here.
-	mu          sync.Mutex
-	files       []string
-	nReduce     int
-	tmpWorkerID int32
-	tmpTaskID   int32
-
-	tasksCompleted  map[int32]TaskOutput //taskID -> TaskOutput
-	tasksAvailable  chan Task
-	tasksInProgress map[int32]Task //taskID -> Task
-	workersTaskMap  map[int32]Task //workerID -> Task
-	workersAliveMap map[int32]int  //workerID -> aliveCount
+	mu                sync.Mutex
+	files             []string
+	nReduce           int
+	tmpWorkerID       int32
+	tmpTaskID         int32
+	tasksCompletedCnt int32
+	tasksCompleted    sync.Map //map[int32]TaskOutput //taskID -> TaskOutput
+	tasksAvailable    chan Task
+	tasksInProgress   sync.Map // map[int32]Task //taskID -> Task
+	workersTaskMap    sync.Map // map[int32]Task //workerID -> Task
+	workersHeartBeat  sync.Map //map[int32]int  //workerID -> aliveCount
 }
 
 func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
-
-	if len(c.tasksCompleted) == c.nReduce+len(c.files) {
+	// print("task request")
+	if int(atomic.LoadInt32(&c.tasksCompletedCnt)) == c.nReduce+len(c.files) {
 		reply.TaskType = "over"
 		return nil
 	}
-
-	if args.WorkerID == -1 {
+	heartBeatChannel, workerfound := c.workersHeartBeat.Load(args.WorkerID)
+	if !workerfound {
 		atomic.AddInt32(&c.tmpWorkerID, 1)
 		reply.WorkerID = atomic.LoadInt32(&c.tmpWorkerID)
+		args.WorkerID = reply.WorkerID
+		heartBeatChannel = make(chan int)
+		c.workersHeartBeat.Store(reply.WorkerID, heartBeatChannel)
 	} else {
 		reply.WorkerID = args.WorkerID
 	}
@@ -55,12 +58,17 @@ func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
 	reply.TaskID = task.TaskID
 	reply.FileNames = task.FileNames
 	reply.TaskType = task.TaskType
+	// print(reply.TaskID)
 
-	c.mu.Lock()
-	c.workersAliveMap[reply.WorkerID] = 1
-	c.workersTaskMap[reply.WorkerID] = task
-	c.tasksInProgress[task.TaskID] = task
-	c.mu.Unlock()
+	// c.workersAliveMap[reply.WorkerID] = 1
+	// c.workersTaskMap[reply.WorkerID] = task
+	// c.tasksInProgress[task.TaskID] = task
+
+	// c.workersAliveMap.Store(reply.WorkerID, 1
+
+	go c.waitForHeartBeat(args, struct{}{})
+	c.workersTaskMap.Store(reply.WorkerID, task)
+	c.tasksInProgress.Store(task.TaskID, task)
 
 	return nil
 }
@@ -68,11 +76,19 @@ func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
 func (c *Coordinator) addReduceTasks() {
 
 	reduceTasks := make([]Task, c.nReduce)
-	for _, value := range c.tasksCompleted {
+
+	c.tasksCompleted.Range(func(key, value interface{}) bool {
 		for i := 0; i < c.nReduce; i++ {
-			reduceTasks[i].FileNames = append(reduceTasks[i].FileNames, value.OutputFileNames[i])
+			reduceTasks[i].FileNames = append(reduceTasks[i].FileNames, value.(TaskOutput).OutputFileNames[i])
 		}
-	}
+		return true
+	})
+
+	// for _, value := range c.tasksCompleted {
+	// 	for i := 0; i < c.nReduce; i++ {
+	// 		reduceTasks[i].FileNames = append(reduceTasks[i].FileNames, value.OutputFileNames[i])
+	// 	}
+	// }
 	for i := 0; i < c.nReduce; i++ {
 		c.tmpTaskID++
 		reduceTasks[i].TaskType = "reduce"
@@ -95,19 +111,20 @@ func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
 	// print(args.TaskID)
 	// print(args.TaskID)
 
-	c.mu.Lock()
-
-	task := c.tasksInProgress[args.TaskID]
-	delete(c.tasksInProgress, task.TaskID)
-	delete(c.workersTaskMap, task.WorkerID)
-	c.tasksCompleted[task.TaskID] = *args
+	ttask, _ := c.tasksInProgress.Load(args.TaskID) //[args.TaskID]
+	task := ttask.(Task)
+	// delete(c.tasksInProgress, task.TaskID)
+	// delete(c.workersTaskMap, task.WorkerID)
+	// c.tasksCompleted[task.TaskID] = *args
+	c.tasksInProgress.Delete(task.TaskID)
+	c.workersTaskMap.Delete(task.WorkerID)
+	c.tasksCompleted.Store(task.TaskID, *args)
+	atomic.AddInt32(&c.tasksCompletedCnt, 1)
 
 	// print(args.outputFileNames)
-	if len(c.tasksCompleted) == len(c.files) {
+	if int(atomic.LoadInt32(&c.tasksCompletedCnt)) == len(c.files) {
 		c.addReduceTasks()
 	}
-
-	c.mu.Unlock()
 
 	return nil
 
@@ -115,46 +132,81 @@ func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
 
 func (c *Coordinator) removeWorker(args WorkerDetails, reply struct{}) {
 	//remove tasks from the tasksinprogress and put it in taskstobedone
-	task := c.workersTaskMap[args.WorkerID]
+	// task := c.workersTaskMap[args.WorkerID]
+
+	tmptask, _ := c.workersTaskMap.Load(args.WorkerID)
+	task, _ := tmptask.(Task)
 	c.tasksAvailable <- task
 
-	c.mu.Lock()
+	// delete(c.tasksInProgress, task.TaskID)
+	// delete(c.workersTaskMap, args.WorkerID)
+	// delete(c.workersAliveMap, args.WorkerID)
 
-	delete(c.tasksInProgress, task.TaskID)
-
-	delete(c.workersTaskMap, args.WorkerID)
-	delete(c.workersAliveMap, args.WorkerID)
-
-	c.mu.Unlock()
+	c.tasksInProgress.Delete(task.TaskID)
+	c.workersTaskMap.Delete(args.WorkerID)
+	c.workersHeartBeat.Delete(args.WorkerID)
 
 }
-func (c *Coordinator) waitForHeartBeat(args *WorkerDetails, reply struct{}) {
-	c.mu.Lock()
-	tmpCount := c.workersAliveMap[args.WorkerID]
-	c.mu.Unlock()
-	time.Sleep(5 * time.Second)
-	if tmpCount == c.workersAliveMap[args.WorkerID] {
-		delete(c.workersAliveMap, args.WorkerID)
-		c.removeWorker(*args, reply)
+
+func (c *Coordinator) SendHeartBeat(args *WorkerDetails, reply *WorkerDetails) error {
+	// print(args.WorkerID)
+	heartBeatChannel, workerfound := c.workersHeartBeat.Load(args.WorkerID)
+	// print(workerfound)
+	if workerfound {
+		// print("hello")
+		heartBeatChannel.(chan int) <- 1
 	}
 
-}
-func (c *Coordinator) HeartBeat(args *WorkerDetails, reply *struct{}) error {
-	//increament alive count
-	//sleepfor10seconds
-	//go waitforheartbeat//10 seconds
-	//sendreply
-
-	//return
-	c.mu.Lock()
-	c.workersAliveMap[args.WorkerID]++
-	c.mu.Unlock()
-	time.Sleep(10 * time.Second)
-	go c.waitForHeartBeat(args, *reply)
 	return nil
-
 }
+func (c *Coordinator) waitForHeartBeat(args *WorkerDetails, reply struct{}) {
 
+	// tmpCount := c.workersAliveMap[args.WorkerID]
+	for {
+
+		heartBeatChannel, workerfound := c.workersHeartBeat.Load(args.WorkerID)
+		// print(workerfound)
+		if !workerfound {
+			return
+		}
+		interval := 15 * time.Second
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+
+		for {
+			//for every second
+			// print("run")
+			select {
+			case <-ticker.C:
+				//after 10 seconds
+
+				select {
+				case <-heartBeatChannel.(chan int):
+					// print("heart beat detected")
+					ticker.Stop()
+					ticker = time.NewTicker(interval)
+					// tmpCount, _ := c.workersAliveMap.Load(args.WorkerID)
+				default:
+					// print("worker dead")
+					c.removeWorker(*args, reply)
+					return
+
+				}
+			default:
+				select {
+				case <-heartBeatChannel.(chan int):
+					// print("heart beat detected")
+					ticker.Stop()
+					ticker = time.NewTicker(interval)
+				default:
+					continue
+				}
+
+			}
+		}
+
+	}
+}
 func (c *Coordinator) Example(args *ExampleArgs, reply *ExampleReply) error {
 
 	reply.Y = args.X + 1
@@ -187,8 +239,8 @@ func (c *Coordinator) server() {
 // mr-main/mrcoordinator.go calls Done() periodically to find out
 // if the entire job has finished.
 func (c *Coordinator) Done() bool {
-	ret := (len(c.tasksCompleted) == c.nReduce+len(c.files))
 
+	ret := (int(atomic.LoadInt32(&c.tasksCompletedCnt)) == c.nReduce+len(c.files))
 	return ret
 }
 
@@ -196,7 +248,7 @@ func (c *Coordinator) Done() bool {
 // mr-main/mrcoordinator.go calls this function.
 // nReduce is the number of reduce tasks to use.
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
-	c := Coordinator{files: files, nReduce: nReduce, tasksAvailable: make(chan Task, nReduce+len(files)), tmpWorkerID: 0, tmpTaskID: 0, tasksCompleted: make(map[int32]TaskOutput), tasksInProgress: make(map[int32]Task), workersTaskMap: make(map[int32]Task), workersAliveMap: make(map[int32]int)}
+	c := Coordinator{files: files, nReduce: nReduce, tasksAvailable: make(chan Task, nReduce+len(files)), tmpWorkerID: 0, tmpTaskID: 0} // tasksCompleted: make(map[int32]TaskOutput), tasksInProgress: make(map[int32]Task), workersTaskMap: make(map[int32]Task), workersAliveMap: make(map[int32]int)}
 	c.addMapTasks()
 	// Your code here.
 

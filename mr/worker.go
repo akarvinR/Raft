@@ -46,12 +46,20 @@ func Worker(mapf func(string, string) []KeyValue,
 	var workerDetails WorkerDetails
 
 	sendHeartBeat := func() {
+		interval := time.Second * 8
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
 		for {
 			select {
 			case <-taskDone:
 				return
 			default:
-				call("Coordinator.HeartBeat", &workerDetails, &task)
+				select {
+				case <-ticker.C:
+					call("Coordinator.SendHeartBeat", &workerDetails, &workerDetails)
+				default:
+					continue
+				}
 			}
 		}
 	}
@@ -60,10 +68,15 @@ func Worker(mapf func(string, string) []KeyValue,
 	call("Coordinator.GetNreduce", &NReduce, &NReduce)
 	workerDetails.WorkerID = -1
 	for {
-		time.Sleep(500 * time.Millisecond)
+		// time.Sleep(2 * time.Millisecond)
+
 		call("Coordinator.GetTask", &workerDetails, &task)
+		// time.Sleep(20 * time.Second)
+		workerDetails.WorkerID = task.WorkerID
+		// print(workerDetails.WorkerID)
 		go sendHeartBeat()
 		if task.TaskType == "over" {
+			taskDone <- true
 			break
 		} else if task.TaskType == "map" {
 			//
@@ -99,6 +112,9 @@ func Worker(mapf func(string, string) []KeyValue,
 			taskOutput := TaskOutput{TaskID: task.TaskID, OutputFileNames: fileNames}
 			// print((taskOutput.TaskID))
 			call("Coordinator.TaskCompleted", &taskOutput, &task)
+			// print("task done")
+
+			// taskDone <- true
 
 		} else if task.TaskType == "reduce" {
 
@@ -164,6 +180,7 @@ func Worker(mapf func(string, string) []KeyValue,
 
 			ofile.Close()
 			call("Coordinator.TaskCompleted", &taskOutput, &task)
+			// taskDone <- true
 
 		}
 
