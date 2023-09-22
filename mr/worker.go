@@ -116,6 +116,7 @@ func Worker(mapf func(string, string) []KeyValue,
 					for _, kv := range buckets[i] {
 						fmt.Fprintf(ofile, "%v %v\n", kv.Key, kv.Value)
 					}
+					// os.Rename(ofile.Name(), "mr-"+fmt.Sprint(task.TaskID)+"-"+fmt.Sprint(i))
 					ofile.Close()
 				}
 

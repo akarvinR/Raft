@@ -37,6 +37,7 @@ type Coordinator struct {
 	tasksInProgress   sync.Map // map[int32]Task //taskID -> Task
 	workersTaskMap    sync.Map // map[int32]Task //workerID -> Task
 	workersHeartBeat  sync.Map //map[int32]int  //workerID -> aliveCount
+
 }
 
 func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
@@ -75,7 +76,7 @@ func (c *Coordinator) GetTask(args *WorkerDetails, reply *Task) error {
 	return nil
 }
 func (c *Coordinator) redoTask(taskID int32) {
-	time.Sleep(15 * time.Second)
+	time.Sleep(10 * time.Second)
 	// print("Redoing Task")
 	if val, found := c.tasksInProgress.Load(taskID); found {
 		task := val.(Task)
@@ -121,17 +122,19 @@ func (c *Coordinator) addMapTasks() {
 func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
 	// print(args.TaskID)
 	// print(args.TaskID)
-
+	// c.mu.Lock()
 	ttask, found := c.tasksInProgress.Load(args.TaskID) //[args.TaskID]
 	if !found {
 		return nil
 	}
 	task := ttask.(Task)
+
 	// delete(c.tasksInProgress, task.TaskID)
 	// delete(c.workersTaskMap, task.WorkerID)
 	// c.tasksCompleted[task.TaskID] = *args
 
 	if task.TaskType == "reduce" {
+
 		os.Rename(args.OutputFileNames[0], "mr-out-"+strconv.Itoa(int(task.TaskID)))
 	}
 
@@ -144,7 +147,7 @@ func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
 	if int(atomic.LoadInt32(&c.tasksCompletedCnt)) == len(c.files) {
 		c.addReduceTasks()
 	}
-
+	// c.mu.Unlock()
 	return nil
 
 }
