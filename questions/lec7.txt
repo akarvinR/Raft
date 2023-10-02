@@ -21,7 +21,7 @@ When a client does a put operation, the leader ensures the operation is replicat
 Even in case of leader/follower failure, the state stays consistent.
 		
 When a client sends a get request, it gets a reply only after leader commits it (gets replicated in majority of the servers),
-hence the client never reads a stale reply.
+hence the client never reads a stale value.
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
