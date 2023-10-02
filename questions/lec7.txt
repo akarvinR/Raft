@@ -1,6 +1,3 @@
-On Monday, we will continue the discussion on distributed consensus. Please read again the Raft paper and submit your answer to the 
-questions below by Monday at 10am. See @12 for instructions on how to submit.
-
 Consider a fault-tolerant key-value store that is backed by a Raft service. The store supports two operations:
 
 
