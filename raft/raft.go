@@ -18,10 +18,10 @@ package raft
 //
 
 import (
+	"cs651/labrpc"
 	"sync"
 	"sync/atomic"
-
-	"cs651/labrpc"
+	"time"
 )
 
 // import "bytes"
@@ -63,7 +63,7 @@ type Raft struct {
 }
 
 // return currentTerm and whether this server
-// believes it is the leader.
+// believes it is the leader.time.NewTicker
 func (rf *Raft) GetState() (int, bool) {
 
 	var term int
@@ -216,12 +216,39 @@ func (rf *Raft) killed() bool {
 
 // The ticker go routine starts a new election if this peer hasn't received
 // heartsbeats recently.
+type AppendEntriesArgs struct {
+	Term int
+	LeaderId int
+	PrevLogIndex int
+	PrevLogTerm int
+	Entries []interface{}
+	LeaderCommit int
+}
+
+type AppendEntriesReply struct {
+	Term int
+	Success bool
+}
+
+func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply){
+
+
+}
 func (rf *Raft) ticker() {
+
+	timeTicker := time.NewTicker(50 * time.Millisecond) 
+	heartBeatTicker = time.NewTicker(50*time.Millisecond) 	
+	defer timeTicker.Stop()
+	//ticker
 	for rf.killed() == false {
+		select {
+			case <-timeTicker.C:
+				// REQUESTVOTE
+			
+		}
 
 		// Your code here to check if a leader election should
 		// be started and to randomize sleeping time using
-		// time.Sleep().
 
 	}
 }
@@ -233,7 +260,7 @@ func (rf *Raft) ticker() {
 // save its persistent state, and also initially holds the most
 // recent saved state, if any. applyCh is a channel on which the
 // tester or service expects Raft to send ApplyMsg messages.
-// Make() must return quickly, so it should start goroutines
+// Make() must return quickly, so it should start goroutin100es
 // for any long-running work.
 func Make(peers []*labrpc.ClientEnd, me int,
 	persister *Persister, applyCh chan ApplyMsg) *Raft {
