@@ -114,6 +114,7 @@ func make_config(t *testing.T, n int, unreliable bool, snapshot bool) *config {
 
 // shut down a Raft server but save its persistent state.
 func (cfg *config) crash1(i int) {
+
 	cfg.disconnect(i)
 	cfg.net.DeleteServer(i) // disable client connections to the server.
 
@@ -369,7 +370,7 @@ func (cfg *config) cleanup() {
 // attach server i to the net.
 func (cfg *config) connect(i int) {
 	// fmt.Printf("connect(%d)\n", i)
-
+	print("Server ", i, " connected\n")
 	cfg.connected[i] = true
 
 	// outgoing ClientEnds
@@ -393,6 +394,7 @@ func (cfg *config) connect(i int) {
 func (cfg *config) disconnect(i int) {
 	// fmt.Printf("disconnect(%d)\n", i)
 
+	print("Server ", i, " crashed\n")
 	cfg.connected[i] = false
 
 	// outgoing ClientEnds
