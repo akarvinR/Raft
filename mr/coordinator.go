@@ -125,9 +125,7 @@ func (c *Coordinator) TaskCompleted(args *TaskOutput, reply *struct{}) error {
 	}
 	task := ttask.(Task)
 
-	// delete(c.tasksInProgress, task.TaskID)
-	// delete(c.workersTaskMap, task.WorkerID)
-	// c.tasksCompleted[task.TaskID] = *args
+
 
 	if task.TaskType == "reduce" {
 

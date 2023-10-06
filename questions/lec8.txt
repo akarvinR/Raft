@@ -1,0 +1,14 @@
+Question: 
+Zookeeper can be used to build a fault-tolerant lock service. How does it guarantee that two client applications cannot acquire the same lock at the same time?
+
+
+Answer: 
+
+For locking, client uses  EPHEMERAL and SEQUENTIAL flag.
+Client checks the children of znode l, if the client's znode has the lowest number the clients holds the lock.
+The client with the sequence number after the current lock holder keeps a watch on the znode.
+
+To release the lock the client deletes znode, the client with next sequence number will check
+the condition again and hold the lock when condition is statisfied.
+
+So, it guarantees mutual exclusion. 
