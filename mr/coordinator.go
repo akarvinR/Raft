@@ -26,7 +26,7 @@ type NReduce struct {
 }
 type Coordinator struct {
 	// Your definitions here.
-	mu                sync.Mutex
+
 	files             []string
 	nReduce           int
 	tmpWorkerID       int32
@@ -96,11 +96,7 @@ func (c *Coordinator) addReduceTasks() {
 		return true
 	})
 
-	// for _, value := range c.tasksCompleted {
-	// 	for i := 0; i < c.nReduce; i++ {
-	// 		reduceTasks[i].FileNames = append(reduceTasks[i].FileNames, value.OutputFileNames[i])
-	// 	}
-	// }
+
 	for i := 0; i < c.nReduce; i++ {
 		c.tmpTaskID++
 		reduceTasks[i].TaskType = "reduce"
