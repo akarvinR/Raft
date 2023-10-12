@@ -128,6 +128,7 @@ func TestBasicAgree2B(t *testing.T) {
 
 	iters := 3
 	for index := 1; index < iters+1; index++ {
+		print(index)
 		nd, _ := cfg.nCommitted(index)
 		if nd > 0 {
 			t.Fatalf("some have committed before Start()")
@@ -204,6 +205,7 @@ func TestFailAgree2B(t *testing.T) {
 	// the full set of servers should preserve
 	// previous agreements, and be able to agree
 	// on new commands.
+	print("heheehehe")
 	cfg.one(106, servers, true)
 	time.Sleep(RaftElectionTimeout)
 	cfg.one(107, servers, true)

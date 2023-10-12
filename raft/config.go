@@ -3,7 +3,7 @@ package raft
 //
 // support for Raft tester.
 //
-// we will use the original config.go to test your code for grading.
+// we will use the origiCal config.go to test your code for grading.
 // so, while you can modify this code to help you debug, please
 // test with the original before submitting.
 //
@@ -170,6 +170,7 @@ func (cfg *config) apply(server int, m ApplyMsg) {
 	cfg.nextIndex[server]++
 
 	logEntry := logEntry{m.CommandValid, m.Command}
+
 	cfg.checkConsistency(server, m.CommandIndex, logEntry)
 	cfg.logs[server][m.CommandIndex] = logEntry
 
@@ -198,6 +199,7 @@ func (cfg *config) applier(server int, applyCh chan ApplyMsg, stopCh <-chan stru
 					return
 				}
 				if stopCh != nil {
+					print("Server ", server, " applied ", m.CommandIndex, "\n")
 					cfg.apply(server, m)
 				}
 			}
@@ -288,7 +290,9 @@ func (cfg *config) applierSnap(server int, applyCh chan ApplyMsg, stopCh <-chan 
 				if !ok {
 					return
 				}
+				print("Server ", server, " applied ", m.CommandIndex, "\n")
 				if stopCh != nil {
+					print("Server ", server, " applied ", m.CommandIndex, "\n")
 					cfg.applySnap(server, m)
 				}
 			}
@@ -583,11 +587,14 @@ func (cfg *config) one(cmd interface{}, expectedServers int, retry bool) int {
 		if index != -1 {
 			// somebody claimed to be the leader and to have
 			// submitted our command; wait a while for agreement.
+
 			t1 := time.Now()
 			for time.Since(t1).Seconds() < 2 {
 				nd, e := cfg.nCommitted(index)
+				// print("nd: ", nd)
 				if nd > 0 && nd >= expectedServers {
 					// committed
+
 					if e == (logEntry{true, cmd}) {
 						// and it was the command we submitted.
 						return index
