@@ -199,7 +199,11 @@ func (cfg *config) applier(server int, applyCh chan ApplyMsg, stopCh <-chan stru
 					return
 				}
 				if stopCh != nil {
-					print("Server ", server, " applied ", m.CommandIndex, "\n")
+					// if m.Command != nil {
+					// 	print("Server ", server, " applied ", m.CommandIndex, " value :", m.Command.(int), "\n")
+					// } else {
+					// 	print("Server ", server, " applied ", m.CommandIndex, " value :", m.Command, "\n")
+					// }
 					cfg.apply(server, m)
 				}
 			}
