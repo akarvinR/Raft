@@ -100,6 +100,14 @@ func (rf *Raft) resetElectionTimeOut() {
 	rf.electionTimeOut.Reset(time.Duration(randomMilliseconds) * time.Millisecond)
 }
 
+func (rf *Raft) initializeNextIndex(){
+	for i := 0; i < len(rf.peers); i++ {
+		if i == rf.me {
+			continue
+		}
+		rf.nextIndex[i] = len(rf.log)
+	}
+}
 func (rf *Raft) changeState(to string) {
 
 	atomic.StoreInt32(&rf.votesReceived, 0)
@@ -108,6 +116,7 @@ func (rf *Raft) changeState(to string) {
 	}
 	if to == "leader" {
 		print("Leader ", rf.me, "\n")
+		rf.initializeNextIndex()
 		rf.votedFor = -1
 		rf.stopElectionTimeOut()
 		rf.State = "leader"
@@ -356,8 +365,22 @@ func (rf *Raft) sendAppendEntries(server int, entries []LogItem) bool {
 			print("Leader Stepping down ", rf.me, " with new term", rf.currentTerm, "\n")
 			rf.currentTerm = appendEntriesReply.Term
 			rf.changeState("follower")
-		}else{
-			rf.nextIndex[server] -= 1
+		}
+		if(appendEntriesReply.IsError == true){
+			// rf.nextIndex[server] -= 1
+			if(appendEntriesReply.ErrorLength <= appendEntriesArgs.PrevLogIndex){
+				rf.nextIndex[server] = appendEntriesReply.ErrorLength
+			}else{
+				rf.nextIndex[server] = appendEntriesReply.ErrorIndex
+				for i := 0; i < len(rf.log); i++ {
+					if rf.log[i].Term == appendEntriesReply.ErrorLength{
+						rf.nextIndex[server] = i
+						break
+					}
+				}
+			}
+			// rf.nextIndex[server] = 1;
+			print("PrevLogIndexError ", rf.me, " ", server, " ", rf.nextIndex[server], " ", appendEntriesReply.ErrorLength, "\n")
 		}
 
 	}
@@ -543,6 +566,7 @@ func (rf *Raft) appendEntries(args *AppendEntriesArgs) {
 		}
 	}
 
+	
 	// print("--------Length after break for ", rf.me, " length: ", len(rf.log), "\n")
 
 	for i := 0; i < len(args.Entries); i++ {
@@ -571,14 +595,15 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 	if rf.State == "leader" {
 		if args.Term >= rf.currentTerm { //TODO CHANGE THIS
-			rf.currentTerm = args.Term
+		
 			print("Leader Stepping down ", rf.me, " with new term", rf.currentTerm, "\n")
-			rf.changeState("follower")
+		
 			reply.Term = rf.currentTerm
 			reply.Success = false
-			// print("\nYOYOYOOYOYOYYOYOYOOYOoooooooooooooooooooooooooooooooooooooooooooooooooooooooooY\n")
-			// rf.addToLog(args)
-			// rf.sendCommitEntries(rf.commitIndex, args.LeaderCommit)
+			reply.IsError = false
+			rf.changeState("follower")
+			rf.currentTerm = args.Term
+
 		} else if args.Term < rf.currentTerm {
 			reply.Success = false
 			reply.Term = args.Term
@@ -589,10 +614,13 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		if args.Term > rf.currentTerm { //TODO CHANGE THIS
 			// THERE IS A LEADER
 			rf.changeState("follower")
-			rf.currentTerm = args.Term
+		
 			reply.Term = rf.currentTerm
 			reply.Success = false
+			reply.IsError = false
 
+
+			rf.currentTerm = args.Term
 			// rf.addToLog(args)
 			// rf.sendCommitEntries(rf.commitIndex, args.LeaderCommit)
 		} else if args.Term < rf.currentTerm {
@@ -604,6 +632,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			rf.changeState("follower")
 			reply.Success = false
 			reply.Term = args.Term
+			reply.IsError = false
 			// rf.addToLog(args)
 			// rf.sendCommitEntries(rf.commitIndex, args.LeaderCommit)
 
@@ -614,23 +643,37 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			rf.resetElectionTimeOut()
 
 		
-			if(args.PrevLogIndex < len(rf.log)){
-				if(args.PrevLogTerm != rf.log[args.PrevLogIndex].Term){
-					reply.Success = false
-					reply.Term = rf.currentTerm
-				}else{
+			if(args.PrevLogIndex < len(rf.log)&&args.PrevLogTerm == rf.log[args.PrevLogIndex].Term){
+
 					reply.Success = true
 					reply.Term = rf.currentTerm
+					reply.IsError = false
 					rf.currentTerm = args.Term
 					rf.addToLog(args)
-					go rf.sendCommitEntries(rf.commitIndex, min(len(rf.log)-1,args.LeaderCommit))
-				}
+					go rf.sendCommitEntries(rf.commitIndex, min(min(args.PrevLogIndex,len(rf.log)-1),args.LeaderCommit))
+				
 
 			}else{
 				reply.Success = false
 				reply.Term = rf.currentTerm
+				reply.IsError = true
+				reply.ErrorLength= len(rf.log)
+				if(args.PrevLogIndex < len(rf.log)){
+					reply.ErrorTerm = rf.log[args.PrevLogIndex].Term
+					for i:=args.PrevLogIndex;i>=0;i-- {
+						if(rf.log[i].Term != reply.ErrorTerm){
+							reply.ErrorIndex = i+1
+							break
+						}
+					}
+
+				}else{
+					reply.ErrorIndex = len(rf.log)-1;
+				}
 
 			}
+
+			rf.currentTerm = args.Term
 			
 
 		} else {
@@ -657,6 +700,11 @@ type AppendEntriesArgs struct {
 type AppendEntriesReply struct {
 	Term    int
 	Success bool
+	IsError bool
+	ErrorTerm  int
+	ErrorIndex int
+	ErrorLength int
+	
 }
 
 func (rf *Raft) startElection() {
