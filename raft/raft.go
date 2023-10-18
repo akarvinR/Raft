@@ -85,6 +85,7 @@ func (rf *Raft) startElectionTimeOut() {
 
 	randomMilliseconds := rand.Intn(400-300+1) + 300
 	rf.electionTimeOut = time.NewTicker(time.Duration(randomMilliseconds) * time.Millisecond)
+	rf.resetElectionTimeOut();
 
 }
 func (rf *Raft) waitForElection() {
@@ -355,6 +356,8 @@ func (rf *Raft) sendAppendEntries(server int, entries []LogItem) bool {
 			print("Leader Stepping down ", rf.me, " with new term", rf.currentTerm, "\n")
 			rf.currentTerm = appendEntriesReply.Term
 			rf.changeState("follower")
+		}else{
+			rf.nextIndex[server] -= 1
 		}
 
 	}
@@ -609,16 +612,26 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		if args.Term >= rf.currentTerm { //TODO CHANGE THIS
 
 			rf.resetElectionTimeOut()
-			rf.currentTerm = args.Term
-			reply.Term = rf.currentTerm
-			reply.Success = true
-			// print(len(args.Entries))
-			// print("Append Entries ", rf.me, " ", args.LeaderCommit, " ", args.Term, " ", rf.currentTerm, "\n")
-			// print("yoyooyyoyoyoyoyo", len(args.Entries), "\n")
-			rf.addToLog(args)
-			if args.PrevLogTerm == rf.log[len(rf.log)-1].Term {
-				rf.sendCommitEntries(rf.commitIndex, min(len(rf.log)-1,args.LeaderCommit))
+
+		
+			if(args.PrevLogIndex < len(rf.log)){
+				if(args.PrevLogTerm != rf.log[args.PrevLogIndex].Term){
+					reply.Success = false
+					reply.Term = rf.currentTerm
+				}else{
+					reply.Success = true
+					reply.Term = rf.currentTerm
+					rf.currentTerm = args.Term
+					rf.addToLog(args)
+					go rf.sendCommitEntries(rf.commitIndex, min(len(rf.log)-1,args.LeaderCommit))
+				}
+
+			}else{
+				reply.Success = false
+				reply.Term = rf.currentTerm
+
 			}
+			
 
 		} else {
 			// print("FAILED APPEND ENTRIES\n")
