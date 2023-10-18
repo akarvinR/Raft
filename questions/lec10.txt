@@ -1,0 +1,9 @@
+In Thor, after a server commits a transaction, the server sends out invalidation messages to clients 
+that are caching data written by that transaction. It may take a while for those invalidations to arrive
+. Is it possible that other clients read stale cached data in the meantime? Explain why or why not.
+
+Yes, it is possbile for the clients to read stale data. But, it will not pass current-version check or 
+transactions check.
+
+Usually, when there is a network partition the client might read from stale version before dropping the object
+from its cance since the message (invalidation) has not arrived.
