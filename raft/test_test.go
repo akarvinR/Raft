@@ -437,10 +437,13 @@ func TestBackup2B(t *testing.T) {
 	cfg.connect((leader1 + 4) % servers)
 
 	// lots of successful commands to new group.
+
+	print("-1-------------------------------------------------------------------2")
 	for i := 0; i < 50; i++ {
 		cfg.one(i + 100, 3, true)
 	}
 
+	print("-------------------------------------------------------------------2")
 	// now another partitioned leader and one follower
 	leader2 := cfg.checkOneLeader()
 	other := (leader1 + 2) % servers
@@ -448,14 +451,14 @@ func TestBackup2B(t *testing.T) {
 		other = (leader2 + 1) % servers
 	}
 	cfg.disconnect(other)
-	print("-----------------------------------------------------------------------------------------------------------|||||||||||\\n")
+
 	// lots more commands that won't commit
 	for i := 0; i < 50; i++ {
 		cfg.rafts[leader2].Start(i+200)
 	}
 
 	time.Sleep(RaftElectionTimeout / 2)
-
+	print("1-----------------------------------------------------------------------------------------------------------|||||||||||\\n")
 	// bring original leader back to life,
 	for i := 0; i < servers; i++ {
 		cfg.disconnect(i)
@@ -463,7 +466,7 @@ func TestBackup2B(t *testing.T) {
 	cfg.connect((leader1 + 0) % servers)
 	cfg.connect((leader1 + 1) % servers)
 	cfg.connect(other)
-
+	print("2-----------------------------------------------------------------------------------------------------------|||||||||||\\n")
 	// lots of successful commands to new group.
 	for i := 0; i < 50; i++ {
 		cfg.one(i+300, 3, true)
@@ -732,10 +735,12 @@ func TestFigure82C(t *testing.T) {
 
 	nup := servers
 	for iters := 0; iters < 1000; iters++ {
+
+		println("------------------------------------------", iters)
 		leader := -1
 		for i := 0; i < servers; i++ {
 			if cfg.rafts[i] != nil {
-				_, _, ok := cfg.rafts[i].Start(rand.Int())
+				_, _, ok := cfg.rafts[i].Start(iters)
 				if ok {
 					leader = i
 				}
