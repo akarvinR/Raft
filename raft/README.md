@@ -162,6 +162,10 @@ Insert calls to `persist()` at the points where your implementation changes pers
 * Many of the 2C tests involve servers failing and the network losing RPC requests or replies. These events are non-deterministic, and you may get lucky and pass the tests, even though your code has bugs. Typically running the test several times will expose those bugs.
 * You will probably need the optimization that backs up nextIndex by more than one entry at a time. Look at the [extended Raft](https://cs-people.bu.edu/liagos/651-2022/papers/raft-extended.pdf) paper starting at the bottom of page 7 and top of page 8 (marked by a gray line). The paper is vague about the details; you will need to fill in the gaps, perhaps with the help of the Raft lectures.
 
+#### A few other hints:
+* Run git pull to get the latest lab software.
+* The 2C tests are more demanding than those for 2A or 2B, and failures may be caused by problems in your code for 2A or 2B.
+
 Your code should pass all the 2C tests (as shown below), as well as the 2A and 2B tests.
 
 ```
@@ -196,28 +200,27 @@ $ for i in {0..10}; do go test; done
 
 As things stand now with your code, a rebooting service replays the complete Raft log in order to restore its state. However, it's not practical for a long-running service to remember the complete Raft log forever. Instead, you'll modify Raft to cooperate to save space: from time to time a service will persistently store a "snapshot" of its current state, and Raft will discard log entries that precede the snapshot. When a service falls far behind the leader and must catch up, the service first installs a snapshot and then replays log entries from after the point at which the snapshot was created. Section 7 of the [extended Raft paper](https://cs-people.bu.edu/liagos/651-2022/papers/raft-extended.pdf) outlines the scheme; you will have to design the details.
 
-To support snapshots, we need an interface between the service and the Raft library. The Raft paper doesn't specify this interface, and several designs are possible. To allow for a simple implementation, we decided on the following interface between service and Raft:
+You may find it helpful to refer to the [diagram](https://pdos.csail.mit.edu/6.824/notes/raft_diagram.pdf) of Raft interactions to understand how the replicated service and Raft communicate.
 
-* `Snapshot(index int, snapshot []byte)`
-* `CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int, snapshot []byte) bool`
+Your Raft must provide the following function that the service can call with a serialized snapshot of its state:
 
-A service calls `Snapshot()` to communicate the snapshot of its state to Raft. The snapshot includes all info up to and including index. This means the corresponding Raft peer no longer needs the log through (and including) index. Your Raft implementation should trim its log as much as possible. You must revise your Raft code to operate while storing only the tail of the log.
+`Snapshot(index int, snapshot []byte)`
 
-As discussed in the extended Raft paper, Raft leaders must sometimes tell lagging Raft peers to update their state by installing a snapshot. You need to implement `InstallSnapshot` RPC senders and handlers for installing snapshots when this situation arises. This is in contrast to `AppendEntries`, which sends log entries that are then applied one by one by the service.
+In Lab 2D, the tester calls `Snapshot()` periodically. In Lab 3, you will write a key/value server that calls `Snapshot()`; the snapshot will contain the complete table of key/value pairs. The service layer calls `Snapshot()` on every peer (not just on the leader).
 
-Note that `InstallSnapshot` RPCs are sent between Raft peers, whereas the provided skeleton functions `Snapshot/CondInstallSnapshot` are used by the service to communicate to Raft.
+The `index` argument indicates the highest log entry that's reflected in the snapshot. Raft should discard its log entries before that point. You'll need to revise your Raft code to operate while storing only the tail of the log.
 
-When a follower receives and handles an `InstallSnapshot` RPC, it must hand the included snapshot to the service using Raft. The `InstallSnapshot` handler can use the `applyCh` to send the snapshot to the service, by putting the snapshot in `ApplyMsg`. The service reads from `applyCh`, and invokes `CondInstallSnapshot` with the snapshot to tell Raft that the service is switching to the passed-in snapshot state, and that Raft should update its log at the same time. (See `applierSnap()` in `config.go` to see how the tester service does this)
+You'll need to implement the `InstallSnapshot` RPC discussed in the paper that allows a Raft leader to tell a lagging Raft peer to replace its state with a snapshot. You will likely need to think through how InstallSnapshot should interact with the state and rules in Figure 2.
 
-`CondInstallSnapshot` should refuse to install a snapshot if it is an old snapshot (i.e., if Raft has processed entries after the snapshot's `lastIncludedTerm/lastIncludedIndex`). This is because Raft may handle other RPCs and send messages on the `applyCh` after it handled the `InstallSnapshot` RPC, and before `CondInstallSnapshot` was invoked by the service. It is not OK for Raft to go back to an older snapshot, so older snapshots must be refused. When your implementation refuses the snapshot, `CondInstallSnapshot` should just return `false` so that the service knows it shouldn't switch to the snapshot.
+When a follower's Raft code receives an `InstallSnapshot` RPC, it can use the `applyCh` to send the snapshot to the service in an ApplyMsg. The `ApplyMsg` struct definition already contains the fields you will need (and which the tester expects). Take care that these snapshots only advance the service's state, and don't cause it to move backwards.
 
-If the snapshot is recent, then Raft should trim its log, persist the new state, return `true`, and the service should switch to the snapshot before processing the next message on the `applyCh`.
+If a server crashes, it must restart from persisted data. Your Raft should persist both Raft state and the corresponding snapshot. Use the second argument to `persister.SaveStateAndSnapshot()` to save the state and the snapshot. If there's no snapshot, pass nil as the second argument.
 
-`CondInstallSnapshot` is one way of updating the Raft and service state; other interfaces between service and raft are possible too. This particular design allows your implementation to do the check whether an snapshot must be installed or not in one place and atomically switch both the service and Raft to the snapshot. You are free to implement Raft in a way that `CondInstallSnapShot` can always return `true`; if your implementation passes the tests, you receive full credit.
+When a server restarts, the application layer reads the persisted snapshot and restores its saved state.
 
 ### Task
 
-Modify your Raft code to support snapshots: implement `Snapshot`, `CondInstallSnapshot`, and the `InstallSnapshot` RPC, as well as the changes to Raft to support these (e.g, continue to operate with a trimmed log). Your solution is complete when it passes the 2D tests and all the Raft tests.
+Modify your Raft code to support snapshots: implement `Snapshot`, and the `InstallSnapshot` RPC, as well as the changes to Raft to support these (e.g, continue to operate with a trimmed log). Your solution is complete when it passes the 2D tests and all the Raft tests.
 
 ### Hints
 
@@ -229,3 +232,20 @@ Modify your Raft code to support snapshots: implement `Snapshot`, `CondInstallSn
 * A reasonable amount of time to consume for the full set of the tests (2A+2B+2C+2D) is 8 minutes of real time and one and a half minutes of CPU time.
 
 
+Your code should pass all the 2D tests (as shown below), as well as the 2A, 2B, and 2C tests.
+
+```
+$ go test -run 2D
+Test (2D): snapshots basic ...
+  ... Passed --  11.6  3  176   61716  192
+Test (2D): install snapshots (disconnect) ...
+  ... Passed --  64.2  3  878  320610  336
+Test (2D): install snapshots (disconnect+unreliable) ...
+  ... Passed --  81.1  3 1059  375850  341
+Test (2D): install snapshots (crash) ...
+  ... Passed --  53.5  3  601  256638  339
+Test (2D): install snapshots (unreliable+crash) ...
+  ... Passed --  63.5  3  687  288294  336
+PASS
+ok      6.5840/raft      293.456s
+```

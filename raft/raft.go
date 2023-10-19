@@ -167,6 +167,10 @@ func (rf *Raft) GetState() (int, bool) {
 // save Raft's persistent state to stable storage,
 // where it can later be retrieved after a crash and restart.
 // see paper's Figure 2 for a description of what should be persistent.
+// before you've implemented snapshots, you should pass nil as the
+// second argument to persister.SaveStateAndSnapshot() or use persister.SaveRaftState().
+// after you've implemented snapshots, pass the current snapshot to persister.SaveStateAndSnapshot
+// (or nil if there's not yet a snapshot).
 func (rf *Raft) persist() {
 	// Your code here (2C).
 	// Example:
@@ -202,15 +206,6 @@ func (rf *Raft) readPersist(data []byte) {
 	//   rf.xxx = xxx
 	//   rf.yyy = yyy
 	// }
-}
-
-// A service wants to switch to snapshot.  Only do so if Raft hasn't
-// have more recent info since it communicate the snapshot on applyCh.
-func (rf *Raft) CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int, snapshot []byte) bool {
-
-	// Your code here (2D).
-
-	return true
 }
 
 // the service says it has created a snapshot that has

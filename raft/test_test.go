@@ -8,12 +8,14 @@ package raft
 // test with the original before submitting.
 //
 
-import "testing"
-import "fmt"
-import "time"
-import "math/rand"
-import "sync/atomic"
-import "sync"
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+)
 
 // The tester generously allows solutions to complete elections in one second
 // (much more than the paper's range of timeouts).
@@ -989,7 +991,7 @@ func internalChurn(t *testing.T, unreliable bool) {
 	lastIndex := cfg.one(rand.Int(), servers, true)
 
 	really := []int{}
-	for index := 0; index <= lastIndex; index++ {
+	for index := 1; index <= lastIndex; index++ {
 		_, e := cfg.wait(index, servers, -1)
 		if e.valid {
 			if vi, ok := e.command.(int); ok {
