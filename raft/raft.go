@@ -268,7 +268,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			reply.VoteGranted = true
 			return
 		} else {
-			rf.currentTerm = args.Term // TODO CHANGE THIS
+			rf.currentTerm = max(rf.currentTerm,args.Term) // TODO CHANGE THIS
 			reply.Term = rf.currentTerm
 			reply.VoteGranted = false
 			return
@@ -332,16 +332,21 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 }
 
 func (rf *Raft) sendAppendEntries(server int, entries []LogItem) bool {
+
+
 	// print("sendAppendEntries ", rf.me, " ", server, " ", len(rf.log), " ", rf.nextIndex[server], "\n")
 	appendEntriesArgs := AppendEntriesArgs{}
 	appendEntriesReply := AppendEntriesReply{}
 
 	appendEntriesArgs.Term = rf.currentTerm
 	appendEntriesArgs.LeaderId = rf.me
-	appendEntriesArgs.PrevLogIndex = rf.nextIndex[server] - 1
 
+	rf.mu.Lock()
+	appendEntriesArgs.PrevLogIndex = min(rf.nextIndex[server] - 1, len(rf.log)-1)
 	appendEntriesArgs.PrevLogTerm = rf.log[appendEntriesArgs.PrevLogIndex].Term
+	rf.mu.Unlock()
 	appendEntriesArgs.Entries = entries
+
 	appendEntriesArgs.LeaderCommit = rf.commitIndex
 
 	ok := rf.peers[server].Call("Raft.AppendEntries", &appendEntriesArgs, &appendEntriesReply)
@@ -349,11 +354,13 @@ func (rf *Raft) sendAppendEntries(server int, entries []LogItem) bool {
 	if !ok {
 		return false
 	}
+
+
+	rf.mu.Lock()
 	if appendEntriesReply.Success == true {
 		if len(entries) > 0 {
-			rf.nextIndex[server] = len(rf.log)
-			rf.matchIndex[server] = len(rf.log) - 1
-			// print("Append Entries Success sent by ", rf.me, " to ", server, " ", len(rf.log), " ", rf.nextIndex[server], "\n")
+			rf.nextIndex[server] += len(entries)
+			rf.matchIndex[server] = rf.nextIndex[server] - 1
 
 		}
 
@@ -382,7 +389,7 @@ func (rf *Raft) sendAppendEntries(server int, entries []LogItem) bool {
 
 	}
 
-
+	rf.mu.Unlock()
 
 	return ok
 }
@@ -414,7 +421,7 @@ func max(x, y int) int {
 func (rf *Raft) commitIndexListener() {
 
 	for rf.killed() == false && rf.State == "leader" {
-		// rf.mu.Lock()
+		rf.mu.Lock()
 		// print("\nCommit Index Listener ", rf.me, " ", rf.commitIndex, "\n")
 		rf.matchIndex[rf.me] = len(rf.log) - 1
 
@@ -429,10 +436,13 @@ func (rf *Raft) commitIndexListener() {
 			rf.lastApplied = rf.commitIndex
 		}
 
+
 		// print("Commit Index ", rf.me, " ", rf.commitIndex, "\n")
 		// print(matchIndexCopy[len(rf.matchIndex)/2], "\n")
-		// rf.mu.Unlock()
+		
 		rf.persist()
+		rf.mu.Unlock()
+		
 		time.Sleep(30 * time.Millisecond)
 	}
 }
@@ -455,9 +465,11 @@ func (rf *Raft) LogListener(server int) {
 		// print("yoyoyo")
 
 		// print("Log Listener ", rf.me, " ", server, " ", len(rf.log), " ", rf.nextIndex[server], "\n")
+		
 		rf.sendAppendEntries(server, rf.log[rf.nextIndex[server]:])
 		rf.persist()
-		time.Sleep(100 * time.Millisecond)
+
+		time.Sleep(30 * time.Millisecond)
 	}
 
 }
@@ -713,6 +725,15 @@ func (rf *Raft) startElection() {
 	rf.waitForElection()
 }
 
+func (rf *Raft) sendHeartBeatHelper(server int){
+	for rf.killed() == false && rf.State == "leader" {
+		ok := rf.sendAppendEntries(server, []LogItem{})
+		if ok == true {
+			return
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+}
 func (rf *Raft) sendHeartBeat() {
 	for rf.killed() == false && rf.State == "leader" {
 		for i := 0; i < len(rf.peers); i++ {
