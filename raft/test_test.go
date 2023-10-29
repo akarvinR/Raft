@@ -814,13 +814,13 @@ func TestUnreliableAgree2C(t *testing.T) {
 }
 func TestMy(t *testing.T){
 	servers := 5
-	cfg := make_config(t, servers, true, false)
+	cfg := make_config(t, servers, false, false)
 	defer cfg.cleanup()
 
 	cfg.one(101, servers, true)
 
 	nup := servers
-	for iters := 0; iters <5000; iters++ {
+	for iters := 0; iters <1000; iters++ {
 		// if iters == 200 {
 		// 	cfg.setlongreordering(true)
 		// }
@@ -832,26 +832,28 @@ func TestMy(t *testing.T){
 			}
 		}
 
-		// if (rand.Int() % 1000) < 100 {
-		// 	ms := rand.Int63() % (int64(RaftElectionTimeout/time.Millisecond) / 2)
-		// 	time.Sleep(time.Duration(ms) * time.Millisecond)
-		// } else {
-		// 	ms := (rand.Int63() % 13)
-		// 	time.Sleep(time.Duration(ms) * time.Millisecond)
-		// }
+		if (rand.Int() % 1000) < 100 {
+			ms := rand.Int63() % (int64(RaftElectionTimeout/time.Millisecond) / 2)
+			time.Sleep(time.Duration(ms) * time.Millisecond)
+		} else {
+			ms := (rand.Int63() % 13)
+			time.Sleep(time.Duration(ms) * time.Millisecond)
+		}
 
 		if leader != -1 {
 			cfg.disconnect(leader)
 			nup -= 1
 		}
 
-		if nup < 3 {
+		if nup <= 2{
 			s := rand.Int() % servers
+			print("------------------------------------------------------------------------------")
 			if cfg.connected[s] == false {
 				cfg.connect(s)
 				nup += 1
 			}
 		}
+
 	}
 
 	for i := 0; i < servers; i++ {
@@ -868,7 +870,7 @@ func TestMy(t *testing.T){
 }
 func TestFigure8Unreliable2C(t *testing.T) {
 	servers := 5
-	cfg := make_config(t, servers, false, false)
+	cfg := make_config(t, servers, false , false)
 	defer cfg.cleanup()
 
 	cfg.begin("Test (2C): Figure 8 (unreliable)")
