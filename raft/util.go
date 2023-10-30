@@ -50,15 +50,18 @@ func init() {
 	log.SetFlags(log.Lmicroseconds)
 }
 func (rf *Raft) startElectionTimeOut() {
-	randomMilliseconds := rand.Intn(400-200+1) + 200
+	randomMilliseconds := rand.Intn(400-300+1) + 300
 	rf.electionTimeOut = time.NewTicker(time.Duration(randomMilliseconds) * time.Millisecond)
 	rf.resetElectionTimeOut();
 
 }
-func (rf *Raft) waitForElection() {
-	randomMilliseconds := rand.Intn(150-50+1) + 50
-	time.Sleep(time.Duration(randomMilliseconds) * time.Millisecond)
+func (rf *Raft) changeTerm(newTerm int){
+	if(newTerm > rf.currentTerm){
+		rf.currentTerm = newTerm
+		rf.votedFor = -1
+	}
 }
+
 func (rf *Raft) stopElectionTimeOut() {
 	if rf.electionTimeOut != nil {
 		print("Timer Stopped for ", rf.me, "\n")

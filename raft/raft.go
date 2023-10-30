@@ -182,8 +182,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		reply.VoteGranted = false
 	} else {
 		if(rf.currentTerm < args.Term){
-			rf.votedFor = -1;
-			rf.currentTerm = args.Term;
+			rf.changeTerm(args.Term)
 		}
 		if (rf.votedFor == -1 || (rf.votedFor == args.CandidateId))  && rf.isMoreUpdateToDate(args.LastLogTerm, args.LastLogIndex, rf.log[len(rf.log)-1].Term, len(rf.log)) {
 			print(rf.me, " received  request vote request from ", args.CandidateId, " ", "My Term ", rf.currentTerm, " Voter Term", args.Term, " votedFor", rf.votedFor, "\n")
@@ -198,7 +197,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			reply.Term = rf.currentTerm
 			reply.VoteGranted = false
 
-			rf.currentTerm = max(rf.currentTerm, args.Term)
+			rf.changeTerm(args.Term)
 		}
 	}
 
@@ -265,8 +264,7 @@ func (rf *Raft) sendAppendEntries(server int) bool {
 	} else {
 		if appendEntriesReply.Term > rf.currentTerm {
 			print("Leader Stepping down ", rf.me, " with new term", rf.currentTerm, "\n")
-			rf.currentTerm = appendEntriesReply.Term
-			rf.votedFor = -1
+			rf.changeTerm(appendEntriesReply.Term)
 			rf.changeState("follower")
 		} else if appendEntriesReply.IsError {
 			if appendEntriesReply.ErrorLength <= appendEntriesArgs.PrevLogIndex {
@@ -367,7 +365,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			reply.Success = false
 			reply.IsError = false
 			rf.changeState("follower")
-			rf.currentTerm = args.Term
+			rf.changeTerm(args.Term)
 			if args.Term > currentTerm {
 				rf.votedFor = -1
 			}
@@ -383,10 +381,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			reply.Term = currentTerm
 			reply.Success = false
 			reply.IsError = false
-			if args.Term > currentTerm {
-				rf.votedFor = -1
-			}
-			rf.currentTerm = args.Term
+			rf.changeTerm(args.Term)
 		} else if args.Term < currentTerm {
 			reply.Success = false
 			reply.IsError = false
@@ -395,9 +390,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	} else if rf.State == "follower" {
 		if args.Term >= currentTerm {
 			rf.resetElectionTimeOut()
-			if args.Term > currentTerm {
-				rf.votedFor = -1
-			}
+			rf.changeTerm(args.Term)
 		} else {
 			reply.Success = false
 			reply.Term = currentTerm
@@ -424,9 +417,7 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 			time.Sleep(10 * time.Millisecond)
 		}
 		rf.mu.Lock()
-		if reply.Term > rf.currentTerm {
-			rf.currentTerm = reply.Term
-		}
+		rf.changeTerm(reply.Term)
 		rf.mu.Unlock()
 	}
 
@@ -464,7 +455,7 @@ func (rf *Raft) startElection() {
 	rf.resetElectionTimeOut()
 	rf.mu.Lock()
 	rf.changeState("candidate")
-	rf.currentTerm += 1
+	rf.changeTerm(rf.currentTerm + 1)
 	rf.votedFor = rf.me
 	rf.mu.Unlock()
 
