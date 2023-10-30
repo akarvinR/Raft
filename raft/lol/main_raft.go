@@ -56,7 +56,7 @@ type LogItem struct {
 }
 
 // A Go object implementing a single Raft peer.
-type Raft2 struct {
+type Raft struct {
 	mu        sync.Mutex          // Lock to protect shared access to this peer's state
 	requestVoteLocker sync.Mutex
 	peers     []*labrpc.ClientEnd // RPC end points of all peers
@@ -769,7 +769,7 @@ func (rf *Raft) ticker() {
 			case <-rf.electionTimeOut.C:
 				print("Election Time Out for ", rf.me, " with Term", rf.currentTerm+1, "\n")
 				rf.startElection()
-					rf.votedFor = -1
+						rf.votedFor = -1
 				
 				rf.mu.Lock()
 				if rf.State != "leader" {

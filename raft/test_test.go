@@ -826,9 +826,13 @@ func TestMy(t *testing.T){
 		// }
 		leader := -1
 		for i := 0; i < servers; i++ {
+			// if cfg.connected[i] == false{
+			// 	continue;
+			// }
 			_, _, ok := cfg.rafts[i].Start(iters)
 			if ok && cfg.connected[i] {
 				leader = i
+				println("---------leader is ", leader, " ",iters)
 			}
 		}
 
@@ -847,7 +851,7 @@ func TestMy(t *testing.T){
 
 		if nup <= 2{
 			s := rand.Int() % servers
-			print("------------------------------------------------------------------------------")
+			// print("------------------------------------------------------------------------------")
 			if cfg.connected[s] == false {
 				cfg.connect(s)
 				nup += 1
@@ -870,7 +874,7 @@ func TestMy(t *testing.T){
 }
 func TestFigure8Unreliable2C(t *testing.T) {
 	servers := 5
-	cfg := make_config(t, servers, false , false)
+	cfg := make_config(t, servers, true , false)
 	defer cfg.cleanup()
 
 	cfg.begin("Test (2C): Figure 8 (unreliable)")

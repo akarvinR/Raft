@@ -56,10 +56,12 @@ func (rf *Raft) startElectionTimeOut() {
 
 }
 func (rf *Raft) changeTerm(newTerm int){
+	rf.termLocker.Lock()
 	if(newTerm > rf.currentTerm){
 		rf.currentTerm = newTerm
 		rf.votedFor = -1
 	}
+	rf.termLocker.Unlock()
 }
 
 func (rf *Raft) stopElectionTimeOut() {
@@ -70,7 +72,7 @@ func (rf *Raft) stopElectionTimeOut() {
 
 }
 func (rf *Raft) resetElectionTimeOut() {
-	randomMilliseconds := rand.Intn(400-200+1) + 200
+	randomMilliseconds := rand.Intn(400-300+1) + 300
 	rf.electionTimeOut.Reset(time.Duration(randomMilliseconds) * time.Millisecond)
 }
 
