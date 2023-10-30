@@ -1,5 +1,4 @@
-package raft
-
+package raft2
 //
 // this is an outline of the API that raft must expose to
 // the service (or tester). see comments below for
@@ -57,8 +56,9 @@ type LogItem struct {
 }
 
 // A Go object implementing a single Raft peer.
-type Raft struct {
+type Raft2 struct {
 	mu        sync.Mutex          // Lock to protect shared access to this peer's state
+	requestVoteLocker sync.Mutex
 	peers     []*labrpc.ClientEnd // RPC end points of all peers
 	persister *Persister          // Object to hold this peer's persisted state
 	me        int                 // this peer's index into peers[]
@@ -139,14 +139,7 @@ func (rf *Raft) changeState(to string) {
 	}
 }
 
-func (rf *Raft) stopElectionTimeOut() {
 
-	if rf.electionTimeOut != nil {
-		print("Timer Stopped for ", rf.me, "\n")
-		rf.electionTimeOut.Stop()
-	}
-
-}
 
 // return currentTerm and whether this server
 // believes it is the leader.time.NewTicker
@@ -776,7 +769,7 @@ func (rf *Raft) ticker() {
 			case <-rf.electionTimeOut.C:
 				print("Election Time Out for ", rf.me, " with Term", rf.currentTerm+1, "\n")
 				rf.startElection()
-						rf.votedFor = -1
+					rf.votedFor = -1
 				
 				rf.mu.Lock()
 				if rf.State != "leader" {
