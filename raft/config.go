@@ -283,7 +283,7 @@ func (cfg *config) applySnap(server int, m ApplyMsg) {
 		cfg.mu.Unlock()
 
 		if makeSnapshot {
-			raft.Snapshot(m.CommandIndex, encodeSnapshot(m.Command.(int)))
+			go raft.Snapshot(m.CommandIndex, encodeSnapshot(m.Command.(int)))
 		}
 	}
 }
