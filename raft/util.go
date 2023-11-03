@@ -45,16 +45,22 @@ type RequestVoteReply struct {
 	// Your data here (2A).
 	Term        int
 	VoteGranted bool
+	WrongLog   bool
 }
 func init() {
 	log.SetFlags(log.Lmicroseconds)
 }
+func (rf *Raft) setRandomTime(){
+	rf.randomMilliseconds = rand.Intn(400-300+1) + 300
+}
 func (rf *Raft) startElectionTimeOut() {
-	randomMilliseconds := rand.Intn(400-300+1) + 300
+	randomMilliseconds := 	rf.randomMilliseconds 
 	rf.electionTimeOut = time.NewTicker(time.Duration(randomMilliseconds) * time.Millisecond)
 	rf.resetElectionTimeOut();
 
 }
+
+
 func (rf *Raft) changeTerm(newTerm int){
 	rf.termLocker.Lock()
 	if(newTerm > rf.currentTerm){
@@ -71,8 +77,13 @@ func (rf *Raft) stopElectionTimeOut() {
 	}
 
 }
+func (rf *Raft) waitForElection() {
+
+	randomMilliseconds := rf.randomMilliseconds
+	time.Sleep(time.Duration(randomMilliseconds) * time.Millisecond)
+}
 func (rf *Raft) resetElectionTimeOut() {
-	randomMilliseconds := rand.Intn(400-300+1) + 300
+	randomMilliseconds := rf.randomMilliseconds
 	rf.electionTimeOut.Reset(time.Duration(randomMilliseconds) * time.Millisecond)
 }
 

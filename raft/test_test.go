@@ -821,9 +821,9 @@ func TestMy(t *testing.T){
 
 	nup := servers
 	for iters := 0; iters <1000; iters++ {
-		// if iters == 200 {
-		// 	cfg.setlongreordering(true)
-		// }
+		if iters == 200 {
+			cfg.setlongreordering(true)
+		}
 		leader := -1
 		for i := 0; i < servers; i++ {
 			// if cfg.connected[i] == false{
@@ -921,8 +921,8 @@ func TestFigure8Unreliable2C(t *testing.T) {
 			cfg.connect(i)
 		}
 	}
-
-	cfg.one(rand.Int()%10000, servers, true)
+	println("----------------------------------*********************************************************88------------------")	
+	cfg.one(-1000, servers, true)
 
 	cfg.end()
 }
