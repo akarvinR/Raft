@@ -357,7 +357,7 @@ func (cfg *config) start1(i int, applier func(int, chan ApplyMsg, <-chan struct{
 
 	cfg.mu.Unlock()
 
-	applyCh := make(chan ApplyMsg)
+	applyCh := make(chan ApplyMsg, 1)
 	cfg.stopCh[i] = make(chan struct{})
 	go applier(i, applyCh, cfg.stopCh[i])
 
