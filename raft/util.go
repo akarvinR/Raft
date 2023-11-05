@@ -12,7 +12,16 @@ import (
 
 // Debugging
 const Debug = false
-
+type InstallSnapshotArgs struct{
+	LastIncludedIndex int
+	LastIncludedTerm int
+	Data []byte
+	Term int
+	LeaderId int
+}
+type InstallSnapshotReply struct{
+	Term int
+}
 type AppendEntriesArgs struct {
 	Term         int
 	LeaderId     int
@@ -51,7 +60,7 @@ func init() {
 	log.SetFlags(log.Lmicroseconds)
 }
 func (rf *Raft) setRandomTime(){
-	rf.randomMilliseconds = rand.Intn(400-300+1) + 300
+	rf.randomMilliseconds = rand.Intn(500-300+1) + 300
 }
 func (rf *Raft) startElectionTimeOut() {
 	randomMilliseconds := 	rf.randomMilliseconds 
@@ -102,4 +111,14 @@ func DPrintf(format string, a ...interface{}) (n int, err error) {
 		log.Printf(format, a...)
 	}
 	return
+}
+
+func (rf *Raft) findProperLogIndex(LogIndex int) (bool,int) {
+	for i := len(rf.log) - 1; i >= 0; i-- {
+		if rf.log[i].LogItemIndex == LogIndex {
+			return true, i
+		}
+	}
+	return false, len(rf.log)*2;
+
 }
