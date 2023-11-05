@@ -376,11 +376,12 @@ func (rf *Raft) sendAppendEntries(server int) bool {
 	}
 
 	entries := rf.log[max(0, appendEntriesArgs.PrevLogIndex-rf.lastSnapshotIndex):]
+	rf.mu.Unlock()
+
 	// // print("sending ", rf.me, " ", server, " ", len(entries), "\n")
 	appendEntriesArgs.PrevLogTerm = PrevLogTerm
 	appendEntriesArgs.Entries = entries
 	appendEntriesArgs.LeaderCommit = rf.commitIndex
-	rf.mu.Unlock()
 
 	ok := rf.peers[server].Call("Raft.AppendEntries", &appendEntriesArgs, &appendEntriesReply)
 
@@ -388,7 +389,7 @@ func (rf *Raft) sendAppendEntries(server int) bool {
 		return ok
 	}
 
-	rf.mu.Lock()
+
 	if appendEntriesReply.Success {
 
 		if len(entries) > 0 {
@@ -399,8 +400,11 @@ func (rf *Raft) sendAppendEntries(server int) bool {
 	} else {
 		if appendEntriesReply.Term > rf.currentTerm {
 			// print("Leader Stepping down ", rf.me, " with new term", rf.currentTerm, "\n")
+			rf.mu.Lock()
 			rf.changeState("follower")
 			rf.changeTerm(appendEntriesReply.Term)
+			rf.persist()
+			rf.mu.Unlock()
 
 		} else if appendEntriesReply.IsError {
 			if appendEntriesReply.ErrorLength <= appendEntriesArgs.PrevLogIndex {
@@ -416,9 +420,7 @@ func (rf *Raft) sendAppendEntries(server int) bool {
 			}
 		}
 	}
-	rf.persist()
 
-	rf.mu.Unlock()
 	return ok
 }
 
@@ -426,8 +428,7 @@ func (rf *Raft) sendSnapshot(server int) bool {
 	// println("-------------------------Locking_________________sendSnapshot ", rf.me, server)
 	rf.mu.Lock()
 	// println("-------------------------GotLocking_________________sendSnapshot ", rf.me, server)
-	defer rf.mu.Unlock()
-	defer rf.persist()
+
 	args := InstallSnapshotArgs{}
 	reply := InstallSnapshotReply{}
 	args.Term = rf.currentTerm
@@ -435,7 +436,7 @@ func (rf *Raft) sendSnapshot(server int) bool {
 	args.LastIncludedIndex = rf.lastSnapshotIndex
 	args.LastIncludedTerm = rf.lastSnapshotTerm
 	args.Data = rf.snapshot
-	
+	rf.mu.Unlock()	
 	ok := rf.peers[server].Call("Raft.InstallSnapshot", &args, &reply)
 
 	if !ok {
@@ -446,8 +447,11 @@ func (rf *Raft) sendSnapshot(server int) bool {
 			rf.matchIndex[server] = rf.lastSnapshotIndex
 		} else {
 			if reply.Term > rf.currentTerm {
+				rf.mu.Lock()
 				rf.changeTerm(reply.Term)
 				rf.changeState("follower")
+				rf.persist()
+				rf.mu.Unlock()
 			}
 		}
 	}
@@ -645,17 +649,17 @@ func (rf *Raft) LogListener(server int) {
 			return
 		}
 		rf.mu.Unlock()
-		lengthOfLog := len(rf.log)
+		lengthOfLog := len(rf.log) + rf.lastSnapshotIndex + 1
 		nextIndexValue := rf.nextIndex[server]
 
 		if nextIndexValue > lengthOfLog || lengthOfLog <= nextIndexValue {
-			time.Sleep(80 * time.Millisecond)
+			time.Sleep(50 * time.Millisecond)
 			continue
 		}
 
 		rf.sendAppendEntries(server)
 
-		time.Sleep(80 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
 
 }
@@ -801,7 +805,7 @@ func (rf *Raft) channelListener() {
 			case msg := <-rf.optCh:
 				rf.ApplyMsgChn <- msg
 			default:
-				time.Sleep(60 * time.Millisecond)
+				time.Sleep(30 * time.Millisecond)
 				continue
 		}
 
