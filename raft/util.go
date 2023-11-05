@@ -21,6 +21,7 @@ type InstallSnapshotArgs struct{
 }
 type InstallSnapshotReply struct{
 	Term int
+	Success bool
 }
 type AppendEntriesArgs struct {
 	Term         int
@@ -81,7 +82,7 @@ func (rf *Raft) changeTerm(newTerm int){
 
 func (rf *Raft) stopElectionTimeOut() {
 	if rf.electionTimeOut != nil {
-		print("Timer Stopped for ", rf.me, "\n")
+		// print("Timer Stopped for ", rf.me, "\n")
 		rf.electionTimeOut.Stop()
 	}
 

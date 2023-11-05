@@ -65,6 +65,8 @@ type config struct {
 	maxIndex  int // protected by `mu`
 	maxIndex0 int
 	stopCh    []chan struct{}
+
+	
 }
 
 var ncpu_once sync.Once
@@ -269,6 +271,7 @@ func (cfg *config) applySnap(server int, m ApplyMsg) {
 		}
 
 		cfg.mu.Lock()
+		print("Server ", server, " is applying checking at index ", m.SnapshotIndex, "\n")
 		cfg.checkCommitted(m.SnapshotIndex, v)
 		// raft := cfg.rafts[server]
 		cfg.mu.Unlock()
@@ -290,6 +293,7 @@ func (cfg *config) applySnap(server int, m ApplyMsg) {
 		cfg.mu.Unlock()
 
 		if makeSnapshot {
+			print("Server ", server, " is making snapshot at index ", m.CommandIndex, "\n")
 			raft.Snapshot(m.CommandIndex, encodeSnapshot(m.Command.(int)))
 		}
 	}
