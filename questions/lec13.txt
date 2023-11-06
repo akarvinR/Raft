@@ -11,7 +11,7 @@ It could be possible that the clients see different order of changes.
 
 Let the series of operations be O1, O2, and client 1 is reading from replica 1 (R1), client 2 is reading from replica 2(R2)
 
-Under the eventual consistency model, change O1 might occur in R1, and  might occur in R2, followed by change O2 in R1,
+Under the eventual consistency model, the replicas could diverge for some point in time, change O1 might occur in R1, and  might occur in R2, followed by change O2 in R1,
 and change O1 in R2. The final states remain the same (guarantee). But the clients see the change in different order.
 
 
