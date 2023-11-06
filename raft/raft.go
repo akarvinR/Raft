@@ -124,7 +124,7 @@ func (rf *Raft) readPersist(data []byte) {
 }
 
 // the service says it has created a snapshot that has
-// all info up to and including index. this means the
+// all info up to and including inde,x. this means the
 // service no longer needs the log through (and including)
 // that index. Raft should now trim its log as much as possible.
 func (rf *Raft) Snapshot(index int, snapshot []byte) {
@@ -147,9 +147,7 @@ func (rf *Raft) helperSnapshot(index int, snapshot []byte) {
 	rf.log = rf.log[index-rf.lastSnapshotIndex:]
 	rf.lastSnapshotIndex = index
 
-	for i := 0; i < len(rf.log); i++ {
-		// print(rf.log[i].Command.(int), " ")
-	}
+
 
 	println()
 	rf.persist()
@@ -300,7 +298,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 			}
 
-			properLogCondition := (args.PrevLogIndex < lengthOfLog) && ((args.PrevLogIndex > rf.lastSnapshotIndex && args.PrevLogTerm == rf.log[args.PrevLogIndex-rf.lastSnapshotIndex-1].Term) ||
+			properLogCondition := (args.PrevLogIndex < lengthOfLog) && ((args.PrevLogIndex > rf.lastSnapshotIndex &&
+				 args.PrevLogTerm == rf.log[args.PrevLogIndex-rf.lastSnapshotIndex-1].Term) ||
 				(args.PrevLogIndex == rf.lastSnapshotIndex && args.PrevLogTerm == rf.lastSnapshotTerm))
 			if properLogCondition {
 				reply.Success = true
