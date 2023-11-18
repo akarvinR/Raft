@@ -11,7 +11,10 @@ type Err string
 // Put or Append
 type PutAppendArgs struct {
 	Key   string
+	RequestId int64
+	ClientId int64
 	Value string
+	
 	Op    string // "Put" or "Append"
 	// You'll have to add definitions here.
 	// Field names must start with capital letters,
@@ -24,6 +27,8 @@ type PutAppendReply struct {
 
 type GetArgs struct {
 	Key string
+	RequestId int64
+	ClientId int64
 	// You'll have to add definitions here.
 }
 

@@ -170,7 +170,7 @@ func (rf *Raft) GetState() (int, bool) {
 func (rf *Raft) changeState(to string) {
 	if to == "leader" {
 
-		// print("**************************************************8Leader elected ", rf.me, "\n")
+		print("**************************************************8Leader elected ", rf.me, "\n")
 		rf.State = "leader"
 		rf.stopElectionTimeOut()
 		rf.initializeNextIndex()
@@ -562,8 +562,8 @@ func (rf *Raft) commitEntries(newCommit int) {
 	}
 	// // print("wowowo " ,newCommit, " ", lastCommit, "\n")
 	for i := lastCommit + 1; i <= newCommit-rf.lastSnapshotIndex-1; i++ {
-		// // print("Committing ", rf.me, " ",  rf.log[i].LogItemIndex, " ", rf.log[i].Command.(int), "\n")
-		rf.optCh <- ApplyMsg{CommandValid: true, Command: rf.log[i].Command, CommandIndex: rf.log[i].LogItemIndex}
+		// print("Committing ", rf.me, " ",  rf.log[i].LogItemIndex, " ", "\n")
+		rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, Command: rf.log[i].Command, CommandIndex: rf.log[i].LogItemIndex}
 	
 		rf.commitIndex++;
 	}
@@ -652,13 +652,13 @@ func (rf *Raft) LogListener(server int) {
 		nextIndexValue := rf.nextIndex[server]
 
 		if nextIndexValue > lengthOfLog || lengthOfLog <= nextIndexValue {
-			time.Sleep(50 * time.Millisecond)
+			time.Sleep(20 * time.Millisecond)
 			continue
 		}
 
 		rf.sendAppendEntries(server)
 
-		time.Sleep(50 * time.Millisecond)
+
 	}
 
 }
@@ -687,7 +687,7 @@ func (rf *Raft) commitIndexListener() {
 		}
 
 		rf.mu.Unlock()
-		time.Sleep(30 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 
 }
@@ -701,8 +701,8 @@ func (rf *Raft) sendCommitEntries2(lastCommit int, newCommit int) {
 	}
 
 	for i := lastCommit + 1; i <= newCommit-rf.lastSnapshotIndex-1; i++ {
-		// print("Committing ", rf.me, " ",  rf.log[i].LogItemIndex, " ", rf.log[i].Command.(int), "\n")
-		rf.optCh <- ApplyMsg{CommandValid: true, Command: rf.log[i].Command, CommandIndex: rf.log[i].LogItemIndex}
+		// print("----------------------Committing ", rf.me, " ",  rf.log[i].LogItemIndex, " ", "\n")
+		rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, Command: rf.log[i].Command, CommandIndex: rf.log[i].LogItemIndex}
 	
 		rf.commitIndex++;
 	}
@@ -717,7 +717,7 @@ func (rf *Raft) sendCommitEntries2(lastCommit int, newCommit int) {
 func (rf *Raft) helper(lastCommit int, newCommit int, logcopy []LogItem) {
 	for i := lastCommit + 1; i <= newCommit; i++ {
 		// print("Committing ", rf.me, " ", rf.log[i].LogItemIndex, " ", rf.log[i].Command.(int), "\n")
-		rf.optCh <- ApplyMsg{CommandValid: true, Command: logcopy[i].Command, CommandIndex: logcopy[i].LogItemIndex}
+		rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, Command: logcopy[i].Command, CommandIndex: logcopy[i].LogItemIndex}
 	
 	}
 }
@@ -765,7 +765,7 @@ func (rf *Raft) InstallSnapshot(snapshotArgs *InstallSnapshotArgs, snapshotReply
 
 				rf.snapshot = snapshotArgs.Data
 				rf.commitIndex = max(rf.commitIndex, rf.lastSnapshotIndex)
-				rf.optCh <- ApplyMsg{SnapshotValid: true, Snapshot: snapshotArgs.Data, SnapshotTerm: snapshotArgs.LastIncludedTerm, SnapshotIndex: snapshotArgs.LastIncludedIndex}
+				rf.ApplyMsgChn <- ApplyMsg{SnapshotValid: true, Snapshot: snapshotArgs.Data, SnapshotTerm: snapshotArgs.LastIncludedTerm, SnapshotIndex: snapshotArgs.LastIncludedIndex}
 
 			}
 		}
@@ -775,7 +775,7 @@ func (rf *Raft) InstallSnapshot(snapshotArgs *InstallSnapshotArgs, snapshotReply
 func (rf *Raft) ticker() {
 	// rf.startElection()
 	rf.changeState("follower")
-	rf.optCh <- ApplyMsg{CommandValid: true, Command: -1000, CommandIndex: 0}
+	rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, CommandIndex: 0}
 
 	for !rf.killed() {
 		select {
@@ -799,16 +799,10 @@ func (rf *Raft) ticker() {
 }
 
 func (rf *Raft) channelListener() {
-	for !rf.killed() {
-		select{
-			case msg := <-rf.optCh:
-				rf.ApplyMsgChn <- msg
-			default:
-				time.Sleep(30 * time.Millisecond)
-				continue
-		}
-
-	}
+	// for !rf.killed() {
+	// 	rf.ApplyMsgChn <- <-rf.optCh
+	// 	// print("sendingggggg")
+	// }
 }
 
 // the service or tester wants to create a Raft server. the ports
@@ -828,7 +822,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.me = me
 	rf.currentTerm = 0
 	rf.votedFor = -1
-	rf.log = []LogItem{{Term: 0, Command: -1000, LogItemIndex: 0}}
+	rf.log = []LogItem{{Term: 0, LogItemIndex: 0}}
 	rf.votesReceived = 0
 	rf.commitIndex = 0
 	rf.lastApplied = 0
@@ -840,7 +834,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.lastSnapshotIndex = -1
 	rf.lastSnapshotTerm = -1
 	rf.snapshot = nil
-	rf.optCh = make(chan ApplyMsg, 1000)
+	rf.optCh = make(chan ApplyMsg, 20000)
 	rf.setRandomTime()
 	for i := 0; i < len(peers); i++ {
 		rf.nextIndex = append(rf.nextIndex, 1)
