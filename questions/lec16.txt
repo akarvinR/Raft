@@ -1,0 +1,7 @@
+Q:  What limitations of MapReduce does Spark address?
+
+Spark puts the intermediate data in memory by RDD while MapReduce has no caching which diminishes its speed.
+
+Spark supports real-time processing via stream processing while MapReduce doesn't.
+
+Spark has much better processing speed than MapReduce because it stores data in memory, has no time is spent in moving the data in and out of disk (around 100 times faster than Mapreduce)
