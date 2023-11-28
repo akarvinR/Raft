@@ -73,7 +73,7 @@ func (ck *Clerk) RetryGet(key string) (bool, string) {
 		}
 		numRetries += 1
 		// time.Sleep(2 * time.Millisecond)
-		time.Sleep(20 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 
 }
@@ -105,7 +105,7 @@ func (ck *Clerk) RetryPut(key string, value string, op string) bool {
 		}
 
 		numRetries += 1
-		time.Sleep(20 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 
 }

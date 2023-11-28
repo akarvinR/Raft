@@ -293,7 +293,7 @@ func (cfg *config) applySnap(server int, m ApplyMsg) {
 		cfg.mu.Unlock()
 
 		if makeSnapshot {
-			print("Server ", server, " is making snapshot at index ", m.CommandIndex, "\n")
+			// print("Server ", server, " is making snapshot at index ", m.CommandIndex, "\n")
 			raft.Snapshot(m.CommandIndex, encodeSnapshot(m.Command.(int)))
 		}
 	}

@@ -7,6 +7,7 @@ import (
 	"log"
 	"sync"
 	"sync/atomic"
+	"bytes"
 	"time"
 	// "time"
 )
@@ -34,30 +35,98 @@ type Op struct {
 type KVServer struct {
 	mu                sync.Mutex
 	mapLocker 			 sync.Mutex
+	Persist		   *raft.Persister
 	me                int
 	rf                *raft.Raft
 	applyCh           chan raft.ApplyMsg
 	dead              int32 // set by Kill()
 	CompletedRequests map[int64]map[int64]string
-	totalRequest map[int64]map[int64]string
 
 	Store        map[string]string
 	maxraftstate int // snapshot if log grows this big
-
-	// Your definitions here.
+	
+	LastApplied int
+	// Your definitions here.	
 }
 
+func (kv *KVServer) getSnapshot() []byte {
+
+	w := new(bytes.Buffer)
+	e := labgob.NewEncoder(w)
+	e.Encode(kv.CompletedRequests)
+	e.Encode(kv.Store)
+	e.Encode(kv.LastApplied)
+	data := w.Bytes()
+	return data
+}
+
+func (kv *KVServer) readSnapshot(data []byte) {
+
+	if data == nil || len(data) < 1 {
+		return
+	}
+	r := bytes.NewBuffer(data)
+	d := labgob.NewDecoder(r)
+
+	var CompletedRequests map[int64]map[int64]string
+	var Store map[string]string
+	var Index int
+	if d.Decode(&CompletedRequests) != nil ||
+		d.Decode(&Store) != nil || d.Decode(&Index) != nil{
+		log.Fatal("Error reading persist data")
+	} else {
+		kv.CompletedRequests = CompletedRequests
+		kv.Store = Store
+		kv.LastApplied = Index
+	}
+}
+
+func (kv *KVServer) checkSnapshot() {
+	if kv.maxraftstate == -1 {
+		return
+	}
+	if kv.Persist.RaftStateSize() > kv.maxraftstate {
+		index := kv.LastApplied
+		print("Server: ", kv.me, " -------Snapshot: ", kv.Persist.RaftStateSize(), " Max: ", kv.maxraftstate, " index:", index, "\n")
+		data := kv.getSnapshot()
+		kv.rf.Snapshot(index, data)
+	}
+}
+func (kv *KVServer) checkSnapshotListener() {
+
+	for !kv.killed() {
+		kv.mu.Lock()
+		kv.mapLocker.Lock()
+	
+		kv.checkSnapshot()
+		// time.Sleep(4 * time.Millisecond)
+		kv.mu.Unlock()
+		kv.mapLocker.Unlock()
+		time.Sleep(100 * time.Millisecond)
+	}
+}
 func (kv *KVServer) channelListener() {
 	for !kv.killed() {
 		msg := <-kv.applyCh
 	
-
-	if msg.Command == nil {
+		if msg.CommandValid == false {
+			kv.mu.Lock()
+			kv.mapLocker.Lock()
+			kv.readSnapshot(msg.Snapshot)
+			kv.mapLocker.Unlock()
+			kv.mu.Unlock()
 			continue
 		}
-	
-		Operation := msg.Command.(Op)	
 
+		if msg.Command == nil {
+			continue
+		}
+		if msg.CommandIndex <= kv.LastApplied {
+			continue
+		}
+		kv.LastApplied = msg.CommandIndex
+		Operation := msg.Command.(Op)	
+		kv.mapLocker.Lock()
 
 		if _, ok := kv.CompletedRequests[Operation.ClientId]; !ok {
 			kv.CompletedRequests[Operation.ClientId] = make(map[int64]string)
@@ -70,9 +139,12 @@ func (kv *KVServer) channelListener() {
 				kv.Store[Operation.Key] = kv.Store[Operation.Key] + Operation.Value
 			}
 			print("Server: ", kv.me, " Operation: ", Operation.Operation, " Key: ", Operation.Key, " Value: ", Operation.Value, " RequestId: ", Operation.RequestId, " ClientId: ", Operation.ClientId,"\n") //, " Value:", kv.Store[Operation.Key], "\n")
+			kv.CompletedRequests[Operation.ClientId] = make(map[int64]string)
 			kv.CompletedRequests[Operation.ClientId][Operation.RequestId] = kv.Store[Operation.Key]
+			
 		}
 		
+		kv.mapLocker.Unlock()
 		// print("Server2: ", kv.me, " Operation: ", Operation.Operation, " Key: ", Operation.Key, " Value: ", Operation.Value, " RequestId: ", Operation.RequestId, " ClientId: ", Operation.ClientId,"\n") //, " Value:", kv.Store[Operation.Key], "\n")
 			
 	}
@@ -85,6 +157,8 @@ func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 
 
 	// print( " Operation: ", Operation.Operation, " Key: ", Operation.Key, " Value: ", Operation.Value, " RequestId: ", Operation.RequestId, " ClientId: ", Operation.ClientId, "\n")
+
+	kv.mapLocker.Lock()
 	if _, ok := kv.CompletedRequests[args.ClientId]; !ok {
 		kv.CompletedRequests[args.ClientId] = make(map[int64]string)
 	}
@@ -92,8 +166,13 @@ func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 	if _, ok := kv.CompletedRequests[args.ClientId][args.RequestId]; ok {
 		reply.Value = kv.CompletedRequests[args.ClientId][args.RequestId]
 		reply.Err = OK
+		kv.mapLocker.Unlock()
 		return
+	}else{
+		kv.mapLocker.Unlock()
 	}
+
+
 	_, _, isLeader := kv.rf.Start(Operation)
 	if !isLeader {
 		reply.Err = ErrWrongLeader
@@ -106,10 +185,15 @@ func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
 
 
 	time.Sleep(20 * time.Millisecond)			
+
+	kv.mapLocker.Lock()
 	if _, ok := kv.CompletedRequests[args.ClientId][args.RequestId]; ok {
 		reply.Value = kv.CompletedRequests[args.ClientId][args.RequestId]
 		reply.Err = OK
+		kv.mapLocker.Unlock()
 		return
+	}else{
+		kv.mapLocker.Unlock()	
 	}
 
 	// Your code here.
@@ -122,14 +206,19 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 
 	Operation := Op{Operation: args.Op, Key: args.Key, Value: args.Value, RequestId: args.RequestId, ClientId: args.ClientId}
 	// print( " Operation: ", Operation.Operation, " Key: ", Operation.Key, " Value: ", Operation.Value, " RequestId: ", Operation.RequestId, " ClientId: ", Operation.ClientId, "\n")
+
+
+	kv.mapLocker.Lock()
 	if _, ok := kv.CompletedRequests[args.ClientId]; !ok {
 		kv.CompletedRequests[args.ClientId] = make(map[int64]string)
 	}
 	if _, ok := kv.CompletedRequests[args.ClientId][args.RequestId]; ok {
 
 		reply.Err = OK
-
+		kv.mapLocker.Unlock()
 		return
+	}else{
+		kv.mapLocker.Unlock()
 	}
 	_, _, isLeader := kv.rf.Start(Operation)
 	if !isLeader {
@@ -150,9 +239,14 @@ func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 	reply.Err = ErrNoKey
 
 	time.Sleep(20 * time.Millisecond)
+
+	kv.mapLocker.Lock()
 	if _, ok := kv.CompletedRequests[args.ClientId][args.RequestId]; ok {
 		reply.Err = OK
+		kv.mapLocker.Unlock()
 		return
+	}else{
+		kv.mapLocker.Unlock()
 	}
 
 
@@ -206,9 +300,20 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 	kv.CompletedRequests = make(map[int64]map[int64]string)
 	kv.Store = make(map[string]string)
 
+	kv.Persist = persister
+
+	print("Server: ", kv.me, " -------Reading Snapshot: ", kv.Persist.RaftStateSize(), " Max: ", kv.maxraftstate, "\n")
+	kv.readSnapshot(kv.Persist.ReadSnapshot())
+	kv.LastApplied = -1;
 	go kv.channelListener()
+
+
+	go kv.checkSnapshotListener()	
 
 	// You may need initialization code here.
 
 	return kv
 }
+
+
+
