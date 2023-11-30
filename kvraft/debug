@@ -1,0 +1,527 @@
+Server: 0 -------Reading Snapshot: 0 Max: 1000
+Server: 1 -------Reading Snapshot: 0 Max: 1000
+Server: 2 -------Reading Snapshot: 0 Max: 1000
+Server: 3 -------Reading Snapshot: 0 Max: 1000
+Server: 4 -------Reading Snapshot: 0 Max: 1000
+Server: 5 -------Reading Snapshot: 0 Max: 1000
+Server: 6 -------Reading Snapshot: 0 Max: 1000
+Test: unreliable net, restarts, partitions, snapshots, random keys, many clients (3B) ...
+**************************************************8Leader elected 6
+Server: 6 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 6 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 4 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 1 Operation: Append Key: 0 Value: x 1 0 y RequestId: 1 ClientId: 4479816221342579632
+Server: 3 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 1 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 4 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 0 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 1 Value:  RequestId: 1 ClientId: 4099646155825638193
+Server: 6 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 4 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 6 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 3 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 4 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 6 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 4 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 3 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 2 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 5 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 6 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 5 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 3 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 2 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 6 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 6 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 6 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 6 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+**************************************************8Leader elected 5
+**************************************************8Leader elected 5
+**************************************************8Leader elected 2
+Server: 0 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 0 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 0 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 1 Operation: Get Key: 0 Value: x 1 0 y RequestId: 2 ClientId: 4099646155825638193
+Server: 1 Operation: Append Key: 1 Value: x 1 1 y RequestId: 2 ClientId: 4479816221342579632
+Server: 1 Operation: Get Key: 0 Value: x 1 0 y RequestId: 3 ClientId: 4479816221342579632
+Server: 1 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+Server: 4 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4479816221342579632
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 5 ClientId: 4479816221342579632
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 y RequestId: 6 ClientId: 4479816221342579632
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 7 ClientId: 4479816221342579632
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 4479816221342579632
+**************************************************8Leader elected 3
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 9 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 y RequestId: 3 ClientId: 4099646155825638193
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 9 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 y RequestId: 3 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 9 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 y RequestId: 3 ClientId: 4099646155825638193
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 9 ClientId: 4479816221342579632
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 y RequestId: 3 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 9 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 y RequestId: 3 ClientId: 4099646155825638193
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 y RequestId: 9 ClientId: 4479816221342579632
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 y RequestId: 3 ClientId: 4099646155825638193
+Server: 3 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 4 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 0 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 3 -------Snapshot: 1018 Max: 1000 index:15
+Server: 2 -------Snapshot: 1018 Max: 1000 index:14
+Server: 4 -------Snapshot: 1018 Max: 1000 index:15
+Server: 1 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 1 -------Snapshot: 1018 Max: 1000 index:15
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 0 -------Snapshot: 1018 Max: 1000 index:15
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 5 -------Snapshot: 1076 Max: 1000 index:16
+
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+**************************************************8Leader elected 3
+**************************************************8Leader elected 0
+labgob warning: Decoding into a non-default variable/field int may not work
+Server: 0 -------Reading Snapshot: 625 Max: 1000
+Server: 1 -------Reading Snapshot: 346 Max: 1000
+Server: 2 -------Reading Snapshot: 671 Max: 1000
+Server: 3 -------Reading Snapshot: 625 Max: 1000
+Server: 4 -------Reading Snapshot: 287 Max: 1000
+Server: 5 -------Reading Snapshot: 567 Max: 1000
+Server: 6 -------Reading Snapshot: 798 Max: 1000
+**************************************************8Leader elected 5
+**************************************************8Leader elected 0
+
+
+
+Server: 2 Operation: Get Key: 0 Value: x 1 0 y RequestId: 4 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 6 Operation: Append Key: 1 Value: x 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 6 Operation: Append Key: 0 Value: x 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 6 Operation: Get Key: 0 Value: x 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 6 Operation: Get Key: 0 Value: x 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 y RequestId: 5 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 0 Value: x 1 0 yx 0 2 y RequestId: 6 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 y RequestId: 7 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 10 ClientId: 4479816221342579632
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 y RequestId: 8 ClientId: 4099646155825638193
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 9 ClientId: 4099646155825638193
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 y RequestId: 1 ClientId: 190983434375249880
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+Server: 6 Operation: Get Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 2 ClientId: 190983434375249880
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 2 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 1 ClientId: 1596618425460185074
+Server: 6 Operation: Append Key: 0 Value: x 0 2 yx 1 0 y RequestId: 1 ClientId: 1412352907132603696
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 1 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 1 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 1 ClientId: 1596618425460185074
+Server: 6 Operation: Get Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 1 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 y RequestId: 1 ClientId: 1596618425460185074
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 2 ClientId: 1412352907132603696
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 2 ClientId: 1412352907132603696
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 2 ClientId: 1412352907132603696
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 2 ClientId: 1412352907132603696
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 y RequestId: 2 ClientId: 1412352907132603696
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 y RequestId: 3 ClientId: 1412352907132603696
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 y RequestId: 2 ClientId: 1412352907132603696
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 4 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 y RequestId: 3 ClientId: 1412352907132603696
+Server: 6 Operation: Append Key: 0 Value: x 0 2 yx 1 0 yx 1 1 y RequestId: 3 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 y RequestId: 3 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 y RequestId: 3 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 y RequestId: 3 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 4 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 4 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 4 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 4 ClientId: 1412352907132603696
+Server: 3 -------Snapshot: 1029 Max: 1000 index:30
+Server: 1 -------Snapshot: 1029 Max: 1000 index:30
+Server: 0 -------Snapshot: 1029 Max: 1000 index:30
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 6 Operation: Append Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 4 ClientId: 1412352907132603696
+Server: 4 -------Snapshot: 1029 Max: 1000 index:30
+Server: 6 -------Snapshot: 1029 Max: 1000 index:30
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 5 -------Snapshot: 1029 Max: 1000 index:31
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 6 Operation: Get Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 6 Operation: Append Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 6 Operation: Append Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 6 Operation: Get Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 0 -------Snapshot: 1075 Max: 1000 index:45
+**************************************************8Leader elected 1
+**************************************************8Leader elected 1
+**************************************************8Leader elected 0
+**************************************************8Leader elected 0
+**************************************************8Leader elected 6
+
+**************************************************8Leader elected 4
+**************************************************8Leader elected 0
+Server: 4 -------Snapshot: 1029 Max: 1000 index:45
+Server: 6 -------Snapshot: 1225 Max: 1000 index:45
+Server: 0 -------Reading Snapshot: 426 Max: 1000
+Server: 1 -------Reading Snapshot: 971 Max: 1000
+Server: 2 -------Reading Snapshot: 322 Max: 1000
+Server: 3 -------Reading Snapshot: 971 Max: 1000
+Server: 4 -------Reading Snapshot: 426 Max: 1000
+Server: 5 -------Reading Snapshot: 925 Max: 1000
+Server: 6 -------Reading Snapshot: 426 Max: 1000
+**************************************************8Leader elected 0
+**************************************************8Leader elected 6
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 1 -------Snapshot: 1225 Max: 1000 index:45
+**************************************************8Leader elected 4
+**************************************************8Leader elected 6
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 5 -------Snapshot: 1179 Max: 1000 index:45
+**************************************************8Leader elected 0
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 0 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 2 ClientId: 1596618425460185074
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 y RequestId: 5 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 6 ClientId: 1412352907132603696
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 7 ClientId: 1412352907132603696
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 y RequestId: 3 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 y RequestId: 8 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 y RequestId: 9 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 4 ClientId: 1596618425460185074
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 5 ClientId: 1596618425460185074
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 10 ClientId: 1412352907132603696
+Server: 3 -------Snapshot: 1271 Max: 1000 index:45
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 3 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 4 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 2 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 6 Operation: Append Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 1 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 y RequestId: 11 ClientId: 1412352907132603696
+Server: 5 Operation: Append Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 6 ClientId: 1596618425460185074
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 3 ClientId: 190983434375249880
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 6 Operation: Get Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 4 ClientId: 190983434375249880
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 y RequestId: 1 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 2 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 2 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 2 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 2 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 2 ClientId: 171634334735517379
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 yx 1 0 y RequestId: 3 ClientId: 171634334735517379
+Server: 6 Operation: Append Key: 1 Value: x 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 yx 1 0 y RequestId: 3 ClientId: 171634334735517379
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 yx 1 0 y RequestId: 3 ClientId: 171634334735517379
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 yx 1 0 y RequestId: 3 ClientId: 171634334735517379
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 yx 1 3 yx 1 4 yx 0 0 yx 0 1 yx 0 3 yx 0 4 yx 0 5 yx 1 3 yx 1 4 yx 0 1 yx 1 0 y RequestId: 3 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 4 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 4 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 4 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 4 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 4 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 171634334735517379
+Server: 0 Operation: Put Key: 1 Value: x 1 1 y RequestId: 6 ClientId: 171634334735517379
+Server: 6 Operation: Put Key: 1 Value: x 1 1 y RequestId: 6 ClientId: 171634334735517379
+Server: 0 -------Snapshot: 1012 Max: 1000 index:61
+Server: 1 Operation: Put Key: 1 Value: x 1 1 y RequestId: 6 ClientId: 171634334735517379
+Server: 1 -------Snapshot: 1012 Max: 1000 index:61
+Server: 6 -------Snapshot: 1012 Max: 1000 index:61
+Server: 4 Operation: Put Key: 1 Value: x 1 1 y RequestId: 6 ClientId: 171634334735517379
+Server: 3 Operation: Put Key: 1 Value: x 1 1 y RequestId: 6 ClientId: 171634334735517379
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 4 -------Snapshot: 1012 Max: 1000 index:61
+Server: 3 -------Snapshot: 1012 Max: 1000 index:61
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 6 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+**************************************************8Leader elected 4
+**************************************************8Leader elected 1
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+**************************************************8Leader elected 4
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+**************************************************8Leader elected 4
+**************************************************8Leader elected 5
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 0 -------Reading Snapshot: 563 Max: 1000
+Server: 1 -------Reading Snapshot: 563 Max: 1000
+Server: 2 -------Reading Snapshot: 563 Max: 1000
+Server: 3 -------Reading Snapshot: 563 Max: 1000
+Server: 4 -------Reading Snapshot: 563 Max: 1000
+Server: 5 -------Reading Snapshot: 563 Max: 1000
+Server: 6 -------Reading Snapshot: 563 Max: 1000
+**************************************************8Leader elected 4
+**************************************************8Leader elected 3
+**************************************************8Leader elected 5
+Server: 5 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 5 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 4 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 4 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 1 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 1 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 3 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 3 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 0 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 0 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 2 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 2 Operation: Get Key: 0 Value: x 1 0 yx 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 6 Operation: Append Key: 1 Value: x 1 1 yx 1 2 y RequestId: 7 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 8 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 9 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 1 ClientId: 486608582376037696
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 10 ClientId: 171634334735517379
+Server: 6 Operation: Get Key: 0 Value: x 0 2 yx 1 0 yx 1 1 yx 1 2 yx 1 5 yx 0 0 yx 0 2 y RequestId: 5 ClientId: 190983434375249880
+Server: 5 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+Server: 2 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+Server: 6 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+Server: 3 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+Server: 1 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+Server: 4 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+Server: 0 Operation: Get Key: 1 Value: x 1 1 yx 1 2 y RequestId: 6 ClientId: 190983434375249880
+info: wrote history visualization to /tmp/3541806063.html
+    /home/akarvin/dist/cs651-code/kvraft/test_test.go:385: history is not linearizable
+--- FAIL: TestSnapshotUnreliableRecoverConcurrentPartitionLinearizable3B (31.06s)
+FAIL
+FAIL    cs651/kvraft    31.112s

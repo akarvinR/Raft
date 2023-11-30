@@ -794,8 +794,10 @@ func (rf *Raft) InstallSnapshot(snapshotArgs *InstallSnapshotArgs, snapshotReply
 func (rf *Raft) ticker() {
 	// rf.startElection()
 	rf.changeState("follower")
-	rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, CommandIndex: 0, Command: nil}
+	if rf.commitIndex < 0 {
 
+		rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, CommandIndex: 0, Command: nil}
+	}
 	for !rf.killed() {
 		select {
 		case <-rf.electionTimeOut.C:
@@ -865,6 +867,10 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
+	rf.snapshot = persister.ReadSnapshot()
+	if rf.LastSnapshotindex != -1{
+		rf.ApplyMsgChn <- ApplyMsg{CommandValid: false, SnapshotValid: true, Snapshot: rf.snapshot, SnapshotTerm: rf.LastSnapshotTerm, SnapshotIndex: rf.LastSnapshotindex}
+	}
 
 	// start ticker goroutine to start elections
 	go rf.ticker()
