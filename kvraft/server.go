@@ -138,7 +138,7 @@ func (kv *KVServer) channelListener() {
 			case "Append":
 				kv.Store[Operation.Key] = kv.Store[Operation.Key] + Operation.Value
 			}
-			print("Server: ", kv.me, " Operation: ", Operation.Operation, " Key: ", Operation.Key, " Value: ",  kv.Store[Operation.Key], " RequestId: ", Operation.RequestId, " ClientId: ", Operation.ClientId, "\n") //, " Value:", kv.Store[Operation.Key], "\n")
+			print("Server: ", kv.me, " Operation: ", Operation.Operation, " Key: ", Operation.Key, " RequestId: ", Operation.RequestId, " ClientId: ", Operation.ClientId, "\n") //, " Value:", kv.Store[Operation.Key], "\n")
 			kv.CompletedRequests[Operation.ClientId] = make(map[int64]string)
 			kv.CompletedRequests[Operation.ClientId][Operation.RequestId] = kv.Store[Operation.Key]
 

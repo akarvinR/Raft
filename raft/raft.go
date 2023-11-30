@@ -584,7 +584,7 @@ func (rf *Raft) commitEntries(newCommit int) {
 
 		rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, Command: rf.log[i].Command, CommandIndex: rf.log[i].LogItemIndex}
 	
-		rf.commitIndex++;
+		rf.commitIndex = rf.log[i].LogItemIndex
 	}
 	// rf.commitIndex = newCommit
 	// logcopy := make([]LogItem, len(rf.log))
@@ -723,7 +723,7 @@ func (rf *Raft) sendCommitEntries2(lastCommit int, newCommit int) {
 		// print("----------------------Committing ", rf.me, " ",  rf.log[i].LogItemIndex, " ", "\n")
 		rf.ApplyMsgChn <- ApplyMsg{CommandValid: true, Command: rf.log[i].Command, CommandIndex: rf.log[i].LogItemIndex}
 	
-		rf.commitIndex++;
+		rf.commitIndex = rf.log[i].LogItemIndex
 	}
 	// print("Committing ", rf.me, " ", lastCommit, " ", newCommit - rf.LastSnapshotindex - 1, "\n")
 	// rf.commitIndex = newCommit
