@@ -1,0 +1,11 @@
+How do virtual nodes (tokens) facilitate load balancing in Dynamo?
+
+
+
+When nodes join, multiple virtual nodes (more if the system is more capable and less if the system is less capable) are created.
+These virtual nodes accept a roughly equivalent amount of load from each of the other virtual nodes.
+
+If a node leaves, the load handled by the virtual nodes is EVENLY dispersed across the remaining available virtual nodes.
+
+
+So the load is dispersed evenly in both scenarios.
