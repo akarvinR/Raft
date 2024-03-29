@@ -1,2 +1,0 @@
-When a mapreduce operation is close to completion. The master schedules backup executions of the remaining 
-in-progess tasks. The task is marked as completed whenever either the primary or the backup execution completes.

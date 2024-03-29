@@ -1,7 +1,0 @@
-Is it possible that a Raft-based replicated log is unavailable (i.e. unable to serve client requests) even if the majority of servers participating in the protocol are up and running? Explain why or why not?
-
-
-
-If the election timeout is too short then the followers will repeatedly time out before the leader has the chance to send any appendenteries. In that case, there is no time processing any new client requests as raft will spend all its time electing new leaders.
-
-If the timeout is too large then there will be a long pause after leader failure.

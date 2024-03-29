@@ -1,3 +1,0 @@
-For Single-Copy Reliable Delivery (SCRD) => Uses TCP to ensure reliable Delivery
-
-For Multiple-Copy Reliable Delivery (MCRD) => Have Publisher running on replicated Datastore, and store data markers in Zookeeper 
